@@ -1,0 +1,17 @@
+modLoader="javafml"
+loaderVersion="[26,)"
+
+[[mods]] 
+	modId="noitemdespawn" 
+	version="${version}" 
+	displayName="NoItemDespawn"
+	description='''Items will no longer despawn, force-despawning works though'''
+	authors="PT400C - Jomcraft Network"
+	credits="Developed by Jomcraft Network"
+	displayURL="https://www.curseforge.com/minecraft/mc-mods/noitemdespawn"
+
+[[dependencies.noitemdespawn]]
+    modId="forge"
+    mandatory=true
+    versionRange="[${forge_version},)"
+    ordering="NONE"
