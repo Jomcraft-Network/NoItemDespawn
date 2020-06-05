@@ -17,7 +17,7 @@ public class NoItemDespawn {
  
 	public static final String MODID = "noitemdespawn";
 	public static final Logger log = LogManager.getLogger(NoItemDespawn.MODID);
-	public static final String VERSION = "2.0";
+	public static final String VERSION = "2.0.1";
 	public static NoItemDespawn instance;
 
 	public NoItemDespawn() {
