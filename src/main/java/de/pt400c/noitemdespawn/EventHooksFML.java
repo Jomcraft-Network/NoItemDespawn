@@ -1,6 +1,6 @@
 /* 
- *      NoItemDespawn - 1.7.10 <> Idea and codedesign by PT400C - Eventhandling class
- *      © PT400C 2018
+ *      NoItemDespawn - 1.15.2 <> Idea and codedesign by PT400C - Eventhandling class
+ *      © Jomcraft Network 2020
  */
 package de.pt400c.noitemdespawn;
 

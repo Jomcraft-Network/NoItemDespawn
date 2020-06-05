@@ -1,6 +1,6 @@
 /* 
- *      NoItemDespawn - 1.7.10 <> Idea and codedesign by PT400C - Mainmod's class and instance
- *      © PT400C 2018
+ *      NoItemDespawn - 1.15.2 <> Idea and codedesign by PT400C - Mod's main class
+ *      © Jomcraft Network 2020
  */
 package de.pt400c.noitemdespawn;
 

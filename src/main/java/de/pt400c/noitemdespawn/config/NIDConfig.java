@@ -1,3 +1,7 @@
+/* 
+ *      NoItemDespawn - 1.15.2 <> Idea and codedesign by PT400C - Config class
+ *      © Jomcraft Network 2020
+ */
 package de.pt400c.noitemdespawn.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
