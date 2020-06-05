@@ -28,10 +28,10 @@ public class EventHooksFML {
 					number++;
 			}
 
-			if (number < NIDConfig.COMMON.maxClumpSize.get()) {
+			if (NIDConfig.COMMON.despawnWhitelist.get().get(0).equals("*") ? (number < NIDConfig.COMMON.maxClumpSize.get()) :(number < NIDConfig.COMMON.maxClumpSize.get() || !NIDConfig.COMMON.despawnWhitelist.get().contains(event.getEntityItem().getItem().getItem().getRegistryName().toString()))) {
 
 				event.getEntityItem().lifespan = 2000000000;
-				if (event.getEntityItem().getAge() > 1999999997)
+				if (event.getEntityItem().age > 1999999997)
 					event.getEntityItem().age = 0;
 				event.setCanceled(true);
 			}

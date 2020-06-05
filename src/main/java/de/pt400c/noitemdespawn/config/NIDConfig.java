@@ -4,6 +4,9 @@
  */
 package de.pt400c.noitemdespawn.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class NIDConfig {
@@ -20,6 +23,8 @@ public class NIDConfig {
 		public final ForgeConfigSpec.IntValue maxClumpSize;
 		
 		public final ForgeConfigSpec.IntValue clumpRadius;
+		
+		public final ForgeConfigSpec.ConfigValue<List<String>> despawnWhitelist;
 
 		Common(ForgeConfigSpec.Builder builder) {
 
@@ -33,6 +38,12 @@ public class NIDConfig {
 			
 			desc = "Radius which is used to determine whether item groups belong to clumps";
 			clumpRadius = builder.comment(desc).defineInRange("clumpRadius", 3, 1, 10);
+			
+			ArrayList<String> arrayList = new ArrayList<String>();
+			arrayList.add("minecraft:egg");
+			
+			desc = "Whitelist of items to despawn in clumps. If all items in clumps should despawn, just place '*' in here.";
+			despawnWhitelist = builder.comment(desc).define("despawnWhitelist", arrayList);
 
 			builder.pop();
 		}

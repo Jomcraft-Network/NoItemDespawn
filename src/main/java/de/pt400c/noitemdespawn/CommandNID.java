@@ -35,7 +35,9 @@ public class CommandNID {
 		         return deleteRange(command.getSource(), -1);
 		      }).then(Commands.argument("range", StringArgumentType.string()).executes((command) -> {
 		         return deleteRange(command.getSource(), Integer.parseInt(StringArgumentType.getString(command, "range")));
-		      })));
+		      }))/*.then(Commands.argument("type", StringArgumentType.string()).executes((command) -> {
+			         return deleteRange(command.getSource(), Integer.parseInt(StringArgumentType.getString(command, "range")));
+			      }))*/);
 
 		event.getCommandDispatcher().register(literalargumentbuilder);
 	}
