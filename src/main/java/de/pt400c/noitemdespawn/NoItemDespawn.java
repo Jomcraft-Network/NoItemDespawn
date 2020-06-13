@@ -27,7 +27,7 @@ public class NoItemDespawn {
 	public static final String MODID = "noitemdespawn";
 	public static final Logger log = LogManager.getLogger(NoItemDespawn.MODID);
 	public static final String USER_AGENT = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2";
-	public static final String VERSION = "2.0.2";
+	public static final String VERSION = "2.0.3";
 	
 	public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	private static final String NETWORK_PROTOCOL_VERSION = "1";
