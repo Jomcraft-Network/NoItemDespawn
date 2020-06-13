@@ -4,15 +4,21 @@
  */
 package de.pt400c.noitemdespawn;
 
+import java.util.HashMap;
 import java.util.List;
-
 import de.pt400c.noitemdespawn.config.NIDConfig;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
 public class EventHooksFML {
+	
+	public static HashMap<Entity, Integer> markedEntities = new HashMap<Entity, Integer>();
+	public static boolean rendering = false;
 	
 	@SubscribeEvent
 	public void despawnEvent(ItemExpireEvent event) {
@@ -38,19 +44,34 @@ public class EventHooksFML {
 		}
 	}
 	
-	/*
+	@SuppressWarnings("resource")
 	@SubscribeEvent
-	public void tickEvent(RenderWorldLastEvent event) {
-		if(Minecraft.getInstance().player.ticksExisted % 20 == 0) {
-		for(Entity e : Minecraft.getInstance().world.getAllEntities()) {
-			if(e instanceof ItemEntity) {
-				
+	public void tickEvent2(RenderTickEvent event) {
 		
-				e.move(MoverType.PISTON, new Vec3d(0, 1, 0));
+		if(rendering) {
+		
+		if(Minecraft.getInstance().world == null || !Minecraft.getInstance().world.isRemote)
+			return;
+
+		int rend = 0;
+		for(Entity e : markedEntities.keySet()) {
+			int value = markedEntities.get(e);
+			if (value > 1)
+				markedEntities.put(e, value - 1);
+			else {
+				continue;
 			}
+			e.setFire(1);
+			rend++;
 		}
+		if(rend == 0) {
+			markedEntities.clear();
+			rendering = false;
+		
 		}
-	}*/
+
+		}
+	}
 	
 	@SubscribeEvent
 	public void serverStarting(FMLServerStartingEvent event) {

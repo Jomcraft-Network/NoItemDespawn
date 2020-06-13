@@ -17,6 +17,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.network.NetworkDirection;
 
 public class CommandNID {
 
@@ -31,7 +32,11 @@ public class CommandNID {
 	         return countRange(command.getSource(), -1);
 	      }).then(Commands.argument("range", StringArgumentType.string()).executes((command) -> {
 	         return countRange(command.getSource(), Integer.parseInt(StringArgumentType.getString(command, "range")));
-	      }))).then(Commands.literal("despawn").executes((command) -> {
+	      }))).then(Commands.literal("mark").executes((command) -> {
+		         return markRange(command.getSource(), -1);
+		      }).then(Commands.argument("range", StringArgumentType.string()).executes((command) -> {
+		         return markRange(command.getSource(), Integer.parseInt(StringArgumentType.getString(command, "range")));
+		      }))).then(Commands.literal("despawn").executes((command) -> {
 		         return deleteRange(command.getSource(), -1);
 		      }).then(Commands.argument("range", StringArgumentType.string()).executes((command) -> {
 		         return deleteRange(command.getSource(), Integer.parseInt(StringArgumentType.getString(command, "range")));
@@ -47,6 +52,7 @@ public class CommandNID {
 		
 		if(first) {
 			source.sendFeedback(new StringTextComponent(TextFormatting.RED + "In this session you didn't use the despawn command before! Please be really careful concerning the range you choose. Deleting the items cannot be undone!"), true);
+			source.sendFeedback(new StringTextComponent(TextFormatting.AQUA + "Better try " + TextFormatting.GOLD + "/noitemdespawn mark" + TextFormatting.AQUA + " to inspect the range!"), true);
 			first = false;
 			return 0;
 		}
@@ -73,6 +79,29 @@ public class CommandNID {
 		source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.GREEN + "" + source.getName().toString() + TextFormatting.GOLD + " despawned " + TextFormatting.AQUA + number + TextFormatting.GOLD + " dropped Items!"), true);
 		return 1;
 
+	}
+	
+	private static int markRange(CommandSource source, int range) throws CommandSyntaxException {
+		int number = 0;
+		if (range == -1) {
+			source.sendFeedback(new StringTextComponent(TextFormatting.RED + "No range specified!"), true);
+			return 0;
+		} else {
+				Iterator<Entity> iterator = source.getWorld().getEntities().iterator();
+				while (iterator.hasNext()) {
+					Entity e = (Entity) iterator.next();
+					if (e != null && e instanceof ItemEntity) {
+						if(distanceBetweenTwoPoints(e.getPosX(), e.getPosY(), e.getPosZ(), source.getEntity().getPosX(), source.getEntity().getPosY(), source.getEntity().getPosZ()) <= range)
+							number++;
+
+					}
+
+				}
+
+		}
+		NoItemDespawn.CHANNEL.sendTo(new MarkPacket(source.getEntity().getPosX(), source.getEntity().getPosY(), source.getEntity().getPosZ(), range), source.asPlayer().connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+		source.sendFeedback(new StringTextComponent(TextFormatting.YELLOW + "Currently " + TextFormatting.AQUA + number + TextFormatting.YELLOW + " dropped Items exist!"), true);
+		return 1;
 	}
 	
 	private static int countRange(CommandSource source, int range) throws CommandSyntaxException {

@@ -25,6 +25,8 @@ public class NIDConfig {
 		public final ForgeConfigSpec.IntValue clumpRadius;
 		
 		public final ForgeConfigSpec.ConfigValue<List<String>> despawnWhitelist;
+		
+		public final ForgeConfigSpec.IntValue markTicks;
 
 		Common(ForgeConfigSpec.Builder builder) {
 
@@ -44,6 +46,9 @@ public class NIDConfig {
 			
 			desc = "Whitelist of items to despawn in clumps. If all items in clumps should despawn, just place '*' in here.";
 			despawnWhitelist = builder.comment(desc).define("despawnWhitelist", arrayList);
+			
+			desc = "How many ticks items will be marked for";
+			markTicks = builder.comment(desc).defineInRange("markTicks", 1000, 10, 100000);
 
 			builder.pop();
 		}
