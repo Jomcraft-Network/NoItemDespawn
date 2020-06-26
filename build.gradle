@@ -9,14 +9,18 @@ buildscript {
     }
 }
 
+plugins {
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
+}
+
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = "1.15.2-2.0.3"
+version = "1.15.2-1.16.1-2.0.5"
 
-def fileVersion = "2.0.3"
+def fileVersion = "2.0.5"
 
 group = 'de.pt400c.noitemdespawn'
 archivesBaseName = 'NoItemDespawn'
@@ -95,6 +99,7 @@ processResources {
 }
 
 jar {
+	exclude('net/**') 
     manifest {
         attributes([
             "Specification-Title": "NoItemDespawn",
@@ -109,18 +114,51 @@ jar {
 }
 
 task sourcesJar(type: Jar) {
-
+	exclude('net/**') 
 	from sourceSets.main.allSource
 	classifier = 'sources'
 }
 
 task deobfJar(type: Jar) {
-	
+	exclude('net/**') 
 	from sourceSets.main.output
 	classifier = 'deobf'
 }
 
 artifacts {
+	archives jar
 	archives sourcesJar
 	archives deobfJar
+}
+
+jar.finalizedBy('reobfJar')
+
+curseforge {
+
+  if(project.hasProperty("cursegradle.api_token") && project.property("cursegradle.api_token") != null && !project.property("cursegradle.api_token").equals("")) {
+  	apiKey = project.property("cursegradle.api_token")
+  	project {
+    	id = '285764'
+    	releaseType = 'release'
+    	addGameVersion '1.16.1'
+    	addGameVersion '1.15.2'
+    	addGameVersion '1.15.1'
+    	addGameVersion '1.15'
+
+    	mainArtifact(jar) {
+    		displayName = "$archivesBaseName-$version"
+    	}
+    
+    	addArtifact (sourcesJar) {
+    		releaseType = 'release'
+    		displayName = "$archivesBaseName-$version-sources"
+    	}
+    
+    	addArtifact (deobfJar) {
+    		releaseType = 'release'
+    		displayName = "$archivesBaseName-$version-deobf"
+    	}
+    
+  	}
+  }
 }

@@ -13,14 +13,21 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.play.server.SChatPacket;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.versions.mcp.MCPVersion;
 
 public class CommandNID {
 
+	private static boolean is115 = MCPVersion.getMCVersion().startsWith("1.15");
 	private static boolean first = true;
 
 	protected static void register(FMLServerStartingEvent event) {
@@ -76,7 +83,14 @@ public class CommandNID {
 				}
 
 		}
-		source.getServer().getPlayerList().sendMessage(new StringTextComponent(TextFormatting.GREEN + "" + source.getName().toString() + TextFormatting.GOLD + " despawned " + TextFormatting.AQUA + number + TextFormatting.GOLD + " dropped Items!"), true);
+		StringTextComponent component = new StringTextComponent(TextFormatting.GREEN + "" + source.getName().toString() + TextFormatting.GOLD + " despawned " + TextFormatting.AQUA + number + TextFormatting.GOLD + " dropped Items!");
+		MinecraftServer.LOGGER.info(component.getString());
+		
+		if(!is115) {
+			source.getServer().getPlayerList().sendPacketToAllPlayers(new SChatPacket(component, ChatType.SYSTEM, source.asPlayer().getUniqueID()));
+		} else {
+			source.getServer().getPlayerList().sendPacketToAllPlayers(new SChatPacket(component, ChatType.SYSTEM));
+		}
 		return 1;
 
 	}
@@ -99,7 +113,20 @@ public class CommandNID {
 				}
 
 		}
-		NoItemDespawn.CHANNEL.sendTo(new MarkPacket(source.getEntity().getPosX(), source.getEntity().getPosY(), source.getEntity().getPosZ(), range), source.asPlayer().connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+		
+		if (is115) {
+			NoItemDespawn.CHANNEL.send(PacketDistributor.DIMENSION.with(() -> source.getEntity().dimension), new MarkPacket(source.getEntity().getPosX(), source.getEntity().getPosY(), source.getEntity().getPosZ(), range));
+
+		} else {
+
+			for (ServerPlayerEntity player : source.getEntity().getServer().getPlayerList().getPlayers()) {
+				if (player.world.func_234923_W_().func_240901_a_().toString().equals(source.getEntity().world.func_234923_W_().func_240901_a_().toString())) {
+					NoItemDespawn.CHANNEL.sendTo(new MarkPacket(source.getEntity().getPosX(), source.getEntity().getPosY(), source.getEntity().getPosZ(), range), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+				}
+			}
+
+		}
+
 		source.sendFeedback(new StringTextComponent(TextFormatting.YELLOW + "Currently " + TextFormatting.AQUA + number + TextFormatting.YELLOW + " dropped Items exist!"), true);
 		return 1;
 	}
