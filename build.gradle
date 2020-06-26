@@ -135,7 +135,7 @@ jar.finalizedBy('reobfJar')
 
 curseforge {
 
-  if(project.hasProperty("cursegradle.api_token") && project.property("cursegradle.api_token") != null && !project.property("cursegradle.api_token").equals("")) {
+ // if(project.hasProperty("cursegradle.api_token") && project.property("cursegradle.api_token") != null && !project.property("cursegradle.api_token").equals("")) {
   	apiKey = project.property("cursegradle.api_token")
   	project {
     	id = '285764'
@@ -159,6 +159,6 @@ curseforge {
     		displayName = "$archivesBaseName-$version-deobf"
     	}
     
-  	}
+  //	}
   }
 }
