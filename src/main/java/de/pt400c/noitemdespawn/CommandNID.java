@@ -51,7 +51,7 @@ public class CommandNID {
 			         return deleteRange(command.getSource(), Integer.parseInt(StringArgumentType.getString(command, "range")));
 			      }))*/);
 
-		event.getCommandDispatcher().register(literalargumentbuilder);
+		event.getServer().getCommandManager().getDispatcher().register(literalargumentbuilder);
 	}
 	
 	private static int deleteRange(CommandSource source, int range) throws CommandSyntaxException {
