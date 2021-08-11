@@ -1,11 +1,10 @@
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        jcenter()
+        maven { url = 'https://maven.minecraftforge.net' }
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
 
@@ -15,29 +14,30 @@ plugins {
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
-apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = "1.15.2-1.16.1-2.0.6"
+version = "1.16.5-2.0.7"
 
-def fileVersion = "2.0.6"
+def fileVersion = "2.0.7"
 
 group = 'de.pt400c.noitemdespawn'
 archivesBaseName = 'NoItemDespawn'
 
-def forge_version = "28.2.3"
+def forge_version = "36.0.32"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 minecraft {
 
-    mappings channel: 'snapshot', version: '20200514-1.15.1'
+    mappings channel: 'official', version: '1.16.5'
 
     runs {
         client {
             workingDirectory project.file('run')
 
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES'
 
             property 'forge.logging.console.level', 'debug'
 
@@ -51,7 +51,7 @@ minecraft {
         server {
             workingDirectory project.file('run')
 
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES'
 
             property 'forge.logging.console.level', 'debug'
 
@@ -65,11 +65,11 @@ minecraft {
         data {
             workingDirectory project.file('run')
 
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES'
 
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
                 examplemod {
@@ -78,12 +78,10 @@ minecraft {
             }
         }
     }
-    
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.2.5'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.2'
 }
 
 processResources {
@@ -140,10 +138,11 @@ curseforge {
   	project {
     	id = '285764'
     	releaseType = 'release'
+		addGameVersion '1.16.5'
+		addGameVersion '1.16.4'
+		addGameVersion '1.16.3'
+		addGameVersion '1.16.2'
     	addGameVersion '1.16.1'
-    	addGameVersion '1.15.2'
-    	addGameVersion '1.15.1'
-    	addGameVersion '1.15'
 
     	mainArtifact(jar) {
     		displayName = "$archivesBaseName-$version"

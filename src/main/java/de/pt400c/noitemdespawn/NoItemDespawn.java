@@ -1,6 +1,6 @@
 /* 
- *      NoItemDespawn - 1.15.2 <> Idea and codedesign by PT400C - Mod's main class
- *      © Jomcraft Network 2020
+ *      NoItemDespawn - 1.16.5 <> Idea and codedesign by PT400C - Mod's main class
+ *      © Jomcraft Network 2021
  */
 package de.pt400c.noitemdespawn;
 
@@ -27,7 +27,7 @@ public class NoItemDespawn {
 	public static final String MODID = "noitemdespawn";
 	public static final Logger log = LogManager.getLogger(NoItemDespawn.MODID);
 	public static final String USER_AGENT = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2";
-	public static final String VERSION = "2.0.3";
+	public static final String VERSION = "2.0.7";
 	
 	public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	private static final String NETWORK_PROTOCOL_VERSION = "1";
@@ -86,23 +86,7 @@ public class NoItemDespawn {
 		wr.flush();
 		wr.close();
 		con.getResponseCode();
-		//if (resCode < HttpsURLConnection.HTTP_BAD_REQUEST) {
-		//	result = con.getInputStream();
-		//} else {
-		//	result = con.getErrorStream();
-		//}
-		/*
-		BufferedReader in = new BufferedReader(new InputStreamReader(result));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
-		}
-		//String JSON = response.toString();
-		in.close();*/
 		con.disconnect();
-		
 
 	}
 }
