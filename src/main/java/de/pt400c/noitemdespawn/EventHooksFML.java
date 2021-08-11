@@ -1,6 +1,6 @@
 /* 
- *      NoItemDespawn - 1.15.2 <> Idea and codedesign by PT400C - Eventhandling class
- *      © Jomcraft Network 2020
+ *      NoItemDespawn - 1.16.5 <> Idea and codedesign by PT400C - Eventhandling class
+ *      © Jomcraft Network 2021
  */
 package de.pt400c.noitemdespawn;
 
@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import de.pt400c.noitemdespawn.config.NIDConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 
 public class EventHooksFML {
 	
@@ -22,12 +22,12 @@ public class EventHooksFML {
 	
 	@SubscribeEvent
 	public void despawnEvent(ItemExpireEvent event) {
-		if (!event.getEntity().world.isRemote) {
+		if (!event.getEntity().level.isClientSide()) {
 
 			int number = 0;
 			ItemEntity e = (ItemEntity) event.getEntity();
 
-			List<ItemEntity> neighbours = e.world.getEntitiesWithinAABB(ItemEntity.class, e.getBoundingBox().grow(NIDConfig.COMMON.clumpRadius.get()));
+			List<ItemEntity> neighbours = e.level.getEntitiesOfClass(ItemEntity.class, e.getBoundingBox().inflate(NIDConfig.COMMON.clumpRadius.get()));
 
 			for (ItemEntity entities : neighbours) {
 				if (!entities.equals(e) && entities.getItem().getItem().equals(e.getItem().getItem()))
@@ -50,7 +50,7 @@ public class EventHooksFML {
 		
 		if(rendering) {
 		
-		if(Minecraft.getInstance().world == null || !Minecraft.getInstance().world.isRemote)
+		if(Minecraft.getInstance().level == null || !Minecraft.getInstance().level.isClientSide())
 			return;
 
 		int rend = 0;
@@ -61,7 +61,7 @@ public class EventHooksFML {
 			else {
 				continue;
 			}
-			e.setFire(1);
+			e.setSecondsOnFire(1);
 			rend++;
 		}
 		if(rend == 0) {

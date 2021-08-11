@@ -1,16 +1,15 @@
 /* 
- *      NoItemDespawn - 1.15.2 <> Idea and codedesign by PT400C - Packet class
- *      © Jomcraft Network 2020
+ *      NoItemDespawn - 1.16.5 <> Idea and codedesign by PT400C - Packet class
+ *      © Jomcraft Network 2021
  */
 package de.pt400c.noitemdespawn;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import java.util.function.Supplier;
-
 import de.pt400c.noitemdespawn.config.NIDConfig;
 
 public final class MarkPacket {
@@ -27,14 +26,14 @@ public final class MarkPacket {
 		this.radius = radius;
 	}
 
-	public static void encode(final MarkPacket msg, final PacketBuffer packetBuffer) {
+	public static void encode(final MarkPacket msg, final FriendlyByteBuf packetBuffer) {
 		packetBuffer.writeDouble(msg.x);
 		packetBuffer.writeDouble(msg.y);
 		packetBuffer.writeDouble(msg.z);
 		packetBuffer.writeInt(msg.radius);
 	}
 
-	public static MarkPacket decode(final PacketBuffer packetBuffer) {
+	public static MarkPacket decode(final FriendlyByteBuf packetBuffer) {
 		return new MarkPacket(packetBuffer.readDouble(), packetBuffer.readDouble(), packetBuffer.readDouble(), packetBuffer.readInt());
 	}
 
@@ -42,12 +41,12 @@ public final class MarkPacket {
 	public static void handle(final MarkPacket msg, final Supplier<NetworkEvent.Context> contextSupplier) {
 		final NetworkEvent.Context context = contextSupplier.get();
 		context.enqueueWork(() -> {
-			Iterable<Entity> iterator = Minecraft.getInstance().world.getAllEntities();
+			Iterable<Entity> iterator = Minecraft.getInstance().level.entitiesForRendering();
 			EventHooksFML.markedEntities.clear();
 			
 			for(Entity e : iterator) {
 				if (e != null && e instanceof ItemEntity) {
-					if(CommandNID.distanceBetweenTwoPoints(e.getPosX(), e.getPosY(), e.getPosZ(), msg.x, msg.y, msg.z) <= msg.radius) {
+					if(CommandNID.distanceBetweenTwoPoints(e.getX(), e.getY(), e.getZ(), msg.x, msg.y, msg.z) <= msg.radius) {
 						EventHooksFML.markedEntities.put(e, NIDConfig.COMMON.markTicks.get());
 					}
 

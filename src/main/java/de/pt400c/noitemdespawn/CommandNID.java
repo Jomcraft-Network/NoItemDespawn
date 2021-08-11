@@ -1,6 +1,6 @@
 /* 
- *      NoItemDespawn - 1.15.2 <> Idea and codedesign by PT400C - Command class
- *      © Jomcraft Network 2020
+ *      NoItemDespawn - 1.16.5 <> Idea and codedesign by PT400C - Command class
+ *      © Jomcraft Network 2021
  */
 package de.pt400c.noitemdespawn;
 
@@ -8,31 +8,29 @@ import java.util.Iterator;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.tree.LiteralCommandNode;
 import de.pt400c.noitemdespawn.config.NIDConfig;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.play.server.SChatPacket;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.game.ClientboundChatPacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.versions.mcp.MCPVersion;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 
 public class CommandNID {
 
-	private static boolean is115 = MCPVersion.getMCVersion().startsWith("1.15");
 	private static boolean first = true;
 
 	protected static void register(FMLServerStartingEvent event) {
-		LiteralArgumentBuilder<CommandSource> literalargumentbuilder = Commands.literal("noitemdespawn").requires((player) -> {
-	         return player.hasPermissionLevel(2);
+		LiteralArgumentBuilder<CommandSourceStack> literalargumentbuilder = Commands.literal("noitemdespawn").requires((player) -> {
+	         return player.hasPermission(2);
 	    });
 		
 		literalargumentbuilder.then(Commands.literal("count").executes((command) -> {
@@ -50,32 +48,34 @@ public class CommandNID {
 		      }))/*.then(Commands.argument("type", StringArgumentType.string()).executes((command) -> {
 			         return deleteRange(command.getSource(), Integer.parseInt(StringArgumentType.getString(command, "range")));
 			      }))*/);
-
-		event.getServer().getCommandManager().getDispatcher().register(literalargumentbuilder);
+		
+		LiteralCommandNode<CommandSourceStack> node = event.getServer().getCommands().getDispatcher().register(literalargumentbuilder);
+		
+		event.getServer().getCommands().getDispatcher().register(Commands.literal("nid").redirect(node));
 	}
 	
-	private static int deleteRange(CommandSource source, int range) throws CommandSyntaxException {
+	private static int deleteRange(CommandSourceStack source, int range) throws CommandSyntaxException {
 		int number = 0;
 		
 		if(first) {
-			source.sendFeedback(new StringTextComponent(TextFormatting.RED + "In this session you didn't use the despawn command before! Please be really careful concerning the range you choose. Deleting the items cannot be undone!"), true);
-			source.sendFeedback(new StringTextComponent(TextFormatting.AQUA + "Better try " + TextFormatting.GOLD + "/noitemdespawn mark" + TextFormatting.AQUA + " to inspect the range!"), true);
+			source.sendSuccess(new TextComponent(ChatFormatting.RED + "In this session you didn't use the despawn command before! Please be really careful concerning the range you choose. Deleting the items cannot be undone!"), true);
+			source.sendSuccess(new TextComponent(ChatFormatting.AQUA + "Better try " + ChatFormatting.GOLD + "/noitemdespawn mark" + ChatFormatting.AQUA + " to inspect the range!"), true);
 			first = false;
 			return 0;
 		}
 		
 		if (range == -1 || range > NIDConfig.COMMON.maxDespawnRadius.get()) {
-			source.sendFeedback(new StringTextComponent(TextFormatting.RED + "You have to specify a valid range / radius! (Maximum: " + NIDConfig.COMMON.maxDespawnRadius.get() + ")"), true);
+			source.sendSuccess(new TextComponent(ChatFormatting.RED + "You have to specify a valid range / radius! (Maximum: " + NIDConfig.COMMON.maxDespawnRadius.get() + ")"), true);
 			return 0;
 		} else {
-				Iterator<Entity> iterator = source.getWorld().getEntities().iterator();
+				Iterator<Entity> iterator = source.getLevel().getEntities().getAll().iterator();
 				while (iterator.hasNext()) {
 					Entity e = (Entity) iterator.next();
 					if (e != null && e instanceof ItemEntity) {
 						
-						if(distanceBetweenTwoPoints(e.getPosX(), e.getPosY(), e.getPosZ(), source.getEntity().getPosX(), source.getEntity().getPosY(), source.getEntity().getPosZ()) <= range) {
+						if(distanceBetweenTwoPoints(e.getX(), e.getY(), e.getZ(), source.getEntity().getX(), source.getEntity().getY(), source.getEntity().getZ()) <= range) {
 							number++;
-							e.remove();
+							e.remove(Entity.RemovalReason.KILLED);
 						}
 
 					}
@@ -83,29 +83,26 @@ public class CommandNID {
 				}
 
 		}
-		StringTextComponent component = new StringTextComponent(TextFormatting.GREEN + "" + source.getName().toString() + TextFormatting.GOLD + " despawned " + TextFormatting.AQUA + number + TextFormatting.GOLD + " dropped Items!");
+		TextComponent component = new TextComponent(ChatFormatting.GREEN + "" + source.getTextName().toString() + ChatFormatting.GOLD + " despawned " + ChatFormatting.AQUA + number + ChatFormatting.GOLD + " dropped Items!");
 		MinecraftServer.LOGGER.info(component.getString());
+
+		source.getServer().getPlayerList().broadcastAll(new ClientboundChatPacket(component, ChatType.SYSTEM, Util.NIL_UUID));
 		
-		if(!is115) {
-			source.getServer().getPlayerList().sendPacketToAllPlayers(new SChatPacket(component, ChatType.SYSTEM, source.asPlayer().getUniqueID()));
-		} else {
-			source.getServer().getPlayerList().sendPacketToAllPlayers(new SChatPacket(component, ChatType.SYSTEM));
-		}
 		return 1;
 
 	}
 	
-	private static int markRange(CommandSource source, int range) throws CommandSyntaxException {
+	private static int markRange(CommandSourceStack source, int range) throws CommandSyntaxException {
 		int number = 0;
 		if (range == -1) {
-			source.sendFeedback(new StringTextComponent(TextFormatting.RED + "No range specified!"), true);
+			source.sendSuccess(new TextComponent(ChatFormatting.RED + "No range specified!"), true);
 			return 0;
 		} else {
-				Iterator<Entity> iterator = source.getWorld().getEntities().iterator();
+				Iterator<Entity> iterator = source.getLevel().getEntities().getAll().iterator();
 				while (iterator.hasNext()) {
 					Entity e = (Entity) iterator.next();
 					if (e != null && e instanceof ItemEntity) {
-						if(distanceBetweenTwoPoints(e.getPosX(), e.getPosY(), e.getPosZ(), source.getEntity().getPosX(), source.getEntity().getPosY(), source.getEntity().getPosZ()) <= range)
+						if(distanceBetweenTwoPoints(e.getX(), e.getY(), e.getZ(), source.getEntity().getX(), source.getEntity().getY(), source.getEntity().getZ()) <= range)
 							number++;
 
 					}
@@ -114,30 +111,19 @@ public class CommandNID {
 
 		}
 		
-		if (is115) {
-			NoItemDespawn.CHANNEL.send(PacketDistributor.DIMENSION.with(() -> source.getEntity().dimension), new MarkPacket(source.getEntity().getPosX(), source.getEntity().getPosY(), source.getEntity().getPosZ(), range));
+		NoItemDespawn.CHANNEL.send(PacketDistributor.DIMENSION.with(() -> source.getEntity().level.dimension()), new MarkPacket(source.getEntity().getX(), source.getEntity().getY(), source.getEntity().getZ(), range));
 
-		} else {
-
-			for (ServerPlayerEntity player : source.getEntity().getServer().getPlayerList().getPlayers()) {
-				if (player.world.func_234923_W_().func_240901_a_().toString().equals(source.getEntity().world.func_234923_W_().func_240901_a_().toString())) {
-					NoItemDespawn.CHANNEL.sendTo(new MarkPacket(source.getEntity().getPosX(), source.getEntity().getPosY(), source.getEntity().getPosZ(), range), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
-				}
-			}
-
-		}
-
-		source.sendFeedback(new StringTextComponent(TextFormatting.YELLOW + "Currently " + TextFormatting.AQUA + number + TextFormatting.YELLOW + " dropped Items exist!"), true);
+		source.sendSuccess(new TextComponent(ChatFormatting.YELLOW + "Currently " + ChatFormatting.AQUA + number + ChatFormatting.YELLOW + " dropped Items exist!"), true);
 		return 1;
 	}
 	
-	private static int countRange(CommandSource source, int range) throws CommandSyntaxException {
+	private static int countRange(CommandSourceStack source, int range) throws CommandSyntaxException {
 		int number = 0;
 		boolean global = false;
 		if (range == -1) {
 			global = true;
-			for (ServerWorld wS : source.getWorld().getServer().getWorlds()) {
-				Iterator<Entity> iterator = wS.getEntities().iterator();
+			for (ServerLevel wS : source.getLevel().getServer().getAllLevels()) {
+				Iterator<Entity> iterator = wS.getEntities().getAll().iterator();
 				while (iterator.hasNext()) {
 					Entity e = (Entity) iterator.next();
 					if (e != null && e instanceof ItemEntity) {
@@ -149,11 +135,11 @@ public class CommandNID {
 
 			}
 		} else {
-				Iterator<Entity> iterator = source.getWorld().getEntities().iterator();
+				Iterator<Entity> iterator = source.getLevel().getEntities().getAll().iterator();
 				while (iterator.hasNext()) {
 					Entity e = (Entity) iterator.next();
 					if (e != null && e instanceof ItemEntity) {
-						if(distanceBetweenTwoPoints(e.getPosX(), e.getPosY(), e.getPosZ(), source.getEntity().getPosX(), source.getEntity().getPosY(), source.getEntity().getPosZ()) <= range)
+						if(distanceBetweenTwoPoints(e.getX(), e.getY(), e.getZ(), source.getEntity().getX(), source.getEntity().getY(), source.getEntity().getZ()) <= range)
 							number++;
 
 					}
@@ -162,8 +148,8 @@ public class CommandNID {
 
 		}
 		
-		String s = (global ? (TextFormatting.RED + " (All dimensions included)") : "");
-		source.sendFeedback(new StringTextComponent(TextFormatting.YELLOW + "Currently " + TextFormatting.AQUA + number + TextFormatting.YELLOW + " dropped Items exist!" + s), true);
+		String s = (global ? (ChatFormatting.RED + " (All dimensions included)") : "");
+		source.sendSuccess(new TextComponent(ChatFormatting.YELLOW + "Currently " + ChatFormatting.AQUA + number + ChatFormatting.YELLOW + " dropped Items exist!" + s), true);
 		return 1;
 	}
 	
