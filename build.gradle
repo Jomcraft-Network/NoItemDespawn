@@ -1,6 +1,5 @@
 buildscript {
     repositories {
-        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
         maven { url = 'https://maven.minecraftforge.net' }
         mavenCentral()
     }
@@ -24,8 +23,6 @@ def fileVersion = "2.0.7"
 group = 'de.pt400c.noitemdespawn'
 archivesBaseName = 'NoItemDespawn'
 
-def forge_version = "37.0.0"
-
 java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
@@ -43,7 +40,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                noitemdespawn {
                     source sourceSets.main
                 }
             }
@@ -57,7 +54,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                noitemdespawn {
                     source sourceSets.main
                 }
             }
@@ -70,10 +67,10 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'noitemdespawn', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                examplemod {
+                noitemdespawn {
                     source sourceSets.main
                 }
             }
@@ -87,20 +84,24 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.17.1-37.0.31'
 }
 
-//processResources {
-//    from(sourceSets.main.resources.srcDirs) {
-//        include 'META-INF/mods.toml'
-//
-//        expand 'version': fileVersion, 'forge_version': forge_version
-//    }
-//
-//    from(sourceSets.main.resources.srcDirs) {
-//        exclude 'META-INF/mods.toml'
-//    }
-//}
+def forge_version = "37.0.0"
+
+processResources {
+
+	duplicatesStrategy = 'include'
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'META-INF/mods.toml'
+
+        expand 'version': fileVersion, 'forge_version': forge_version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'META-INF/mods.toml'
+    }
+}
 
 jar {
-	exclude('net/**') 
     manifest {
         attributes([
             "Specification-Title": "NoItemDespawn",
@@ -115,13 +116,11 @@ jar {
 }
 
 task sourcesJar(type: Jar) {
-	exclude('net/**') 
 	from sourceSets.main.allSource
 	classifier = 'sources'
 }
 
 task deobfJar(type: Jar) {
-	exclude('net/**') 
 	from sourceSets.main.output
 	classifier = 'deobf'
 }

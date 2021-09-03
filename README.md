@@ -1,3 +1,11 @@
-[![Version](https://badgen.net/https/apiv1.jomcraft.net/stats/noitemdespawn/endpoint?cache=3600)](https://www.curseforge.com/minecraft/mc-mods/noitemdespawn) [![Build Status](https://gitlab.com/jomcraft-sources/noitemdespawn/badges/master/pipeline.svg)](https://gitlab.com/jomcraft-sources/noitemdespawn)
+[![NoItemDespawn](https://github.com/Jomcraft-Network/NoItemDespawn/actions/workflows/build.yml/badge.svg?branch=1.17.x)](https://github.com/Jomcraft-Network/NoItemDespawn/actions/workflows/build.yml)
 
-### NoItemDespawn
+### NoItemDespawn 1.17.1
+
+---
+
+NoItemDespawn is a Minecraft Forge mod created by the Jomcraft Network development team. Official downloads and further information may be found on our [curseforge page](https://www.curseforge.com/minecraft/mc-mods/noitemdespawn).
+
+##### License
+
+This project is licensed under the **Apache License Version 2.0** license. We do not grant any type of warranty.
