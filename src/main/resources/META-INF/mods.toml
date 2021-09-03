@@ -4,7 +4,7 @@ license="Apache License 2.0"
 
 [[mods]] 
 	modId="noitemdespawn" 
-	version="2.0.7" 
+	version="${version}" 
 	displayName="NoItemDespawn"
 	description='''Items will no longer despawn, force-despawning works though'''
 	authors="PT400C - Jomcraft Network"
@@ -14,5 +14,13 @@ license="Apache License 2.0"
 [[dependencies.noitemdespawn]]
     modId="forge"
     mandatory=true
-    versionRange="[36.0.32,)"
+    versionRange="[${forge_version},)"
     ordering="NONE"
+    side="BOTH"
+    
+[[dependencies.noitemdespawn]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16,]"
+    ordering="NONE"
+    side="BOTH"
