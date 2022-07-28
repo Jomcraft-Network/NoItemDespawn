@@ -1,5 +1,5 @@
 /* 
- *		ServerPassword - 1.18.x <> Codedesign by Jomcraft Network
+ *		NoItemDespawn - 1.18.x <> Codedesign by Jomcraft Network
  *		© Jomcraft-Network 2022
  */
 package net.jomcraft.noitemdespawn.config;
