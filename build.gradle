@@ -135,7 +135,7 @@ curseforge {
 	if(System.getenv("CURSE_API") != null && !System.getenv("CURSE_API").equals("")) {
 		apiKey = System.getenv("CURSE_API")
 		project {
-			id = '296938'
+			id = '285764'
 			releaseType = 'release'
 			addGameVersion '1.18.1'
 			addGameVersion '1.18.2'
