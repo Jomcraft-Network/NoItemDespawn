@@ -1,12 +1,12 @@
 /* 
- *		ServerPassword - 1.18.x <> Codedesign by Jomcraft Network
+ *		NoItemDespawn - 1.19.x <> Codedesign by Jomcraft Network
  *		© Jomcraft-Network 2022
  */
 package net.jomcraft.noitemdespawn;
 
 import java.util.HashMap;
 import java.util.List;
-
+import java.util.Objects;
 import net.jomcraft.noitemdespawn.config.NIDConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
@@ -15,6 +15,7 @@ import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class EventHooksFML {
 
@@ -35,11 +36,11 @@ public class EventHooksFML {
 					number++;
 			}
 
-			if (NIDConfig.COMMON.despawnWhitelist.get().get(0).equals("*") ? (number < NIDConfig.COMMON.maxClumpSize.get()) : (number < NIDConfig.COMMON.maxClumpSize.get() || !NIDConfig.COMMON.despawnWhitelist.get().contains(event.getEntityItem().getItem().getItem().getRegistryName().toString()))) {
+			if (NIDConfig.COMMON.despawnWhitelist.get().get(0).equals("*") ? (number < NIDConfig.COMMON.maxClumpSize.get()) : (number < NIDConfig.COMMON.maxClumpSize.get() || !NIDConfig.COMMON.despawnWhitelist.get().contains(Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(event.getEntity().getItem().getItem()).toString())))) {
 
-				event.getEntityItem().lifespan = 2000000000;
-				if (event.getEntityItem().age > 1999999997)
-					event.getEntityItem().age = 0;
+				event.getEntity().lifespan = 2000000000;
+				if (event.getEntity().age > 1999999997)
+					event.getEntity().age = 0;
 				event.setCanceled(true);
 			}
 		}
@@ -47,7 +48,7 @@ public class EventHooksFML {
 
 	@SuppressWarnings("resource")
 	@SubscribeEvent
-	public void tickEvent2(RenderTickEvent event) {
+	public void tickEvent(RenderTickEvent event) {
 
 		if (rendering) {
 

@@ -1,5 +1,5 @@
 /* 
- *		ServerPassword - 1.18.x <> Codedesign by Jomcraft Network
+ *		NoItemDespawn - 1.19.x <> Codedesign by Jomcraft Network
  *		© Jomcraft-Network 2022
  */
 package net.jomcraft.noitemdespawn;
@@ -9,15 +9,12 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-
 import net.jomcraft.noitemdespawn.config.NIDConfig;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.ChatType;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.protocol.game.ClientboundChatPacket;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -57,14 +54,14 @@ public class CommandNID {
 		int number = 0;
 
 		if (first) {
-			source.sendSuccess(new TextComponent(ChatFormatting.RED + "In this session you didn't use the despawn command before! Please be really careful concerning the range you choose. Deleting the items cannot be undone!"), true);
-			source.sendSuccess(new TextComponent(ChatFormatting.AQUA + "Better try " + ChatFormatting.GOLD + "/noitemdespawn mark" + ChatFormatting.AQUA + " to inspect the range!"), true);
+			source.sendSuccess(Component.literal(ChatFormatting.RED + "In this session you didn't use the despawn command before! Please be really careful concerning the range you choose. Deleting the items cannot be undone!"), true);
+			source.sendSuccess(Component.literal(ChatFormatting.AQUA + "Better try " + ChatFormatting.GOLD + "/noitemdespawn mark" + ChatFormatting.AQUA + " to inspect the range!"), true);
 			first = false;
 			return 0;
 		}
 
 		if (range == -1 || range > NIDConfig.COMMON.maxDespawnRadius.get()) {
-			source.sendSuccess(new TextComponent(ChatFormatting.RED + "You have to specify a valid range / radius! (Maximum: " + NIDConfig.COMMON.maxDespawnRadius.get() + ")"), true);
+			source.sendSuccess(Component.literal(ChatFormatting.RED + "You have to specify a valid range / radius! (Maximum: " + NIDConfig.COMMON.maxDespawnRadius.get() + ")"), true);
 			return 0;
 		} else {
 			Iterator<Entity> iterator = source.getLevel().getEntities().getAll().iterator();
@@ -82,10 +79,10 @@ public class CommandNID {
 			}
 
 		}
-		TextComponent component = new TextComponent(ChatFormatting.GREEN + "" + source.getTextName().toString() + ChatFormatting.GOLD + " despawned " + ChatFormatting.AQUA + number + ChatFormatting.GOLD + " dropped Items!");
+		Component component = Component.literal(ChatFormatting.GREEN + "" + source.getTextName().toString() + ChatFormatting.GOLD + " despawned " + ChatFormatting.AQUA + number + ChatFormatting.GOLD + " dropped Items!");
 		MinecraftServer.LOGGER.info(component.getString());
 
-		source.getServer().getPlayerList().broadcastAll(new ClientboundChatPacket(component, ChatType.SYSTEM, Util.NIL_UUID));
+		source.getServer().getPlayerList().broadcastAll(new ClientboundSystemChatPacket(component, false));
 
 		return 1;
 
@@ -94,7 +91,7 @@ public class CommandNID {
 	private static int markRange(CommandSourceStack source, int range) throws CommandSyntaxException {
 		int number = 0;
 		if (range == -1) {
-			source.sendSuccess(new TextComponent(ChatFormatting.RED + "No range specified!"), true);
+			source.sendSuccess(Component.literal(ChatFormatting.RED + "No range specified!"), true);
 			return 0;
 		} else {
 			Iterator<Entity> iterator = source.getLevel().getEntities().getAll().iterator();
@@ -111,7 +108,7 @@ public class CommandNID {
 
 		NoItemDespawn.CHANNEL.send(PacketDistributor.DIMENSION.with(() -> source.getEntity().level.dimension()), new MarkPacket(source.getEntity().getX(), source.getEntity().getY(), source.getEntity().getZ(), range));
 
-		source.sendSuccess(new TextComponent(ChatFormatting.YELLOW + "Currently " + ChatFormatting.AQUA + number + ChatFormatting.YELLOW + " dropped Items exist!"), true);
+		source.sendSuccess(Component.literal(ChatFormatting.YELLOW + "Currently " + ChatFormatting.AQUA + number + ChatFormatting.YELLOW + " dropped Items exist!"), true);
 		return 1;
 	}
 
@@ -144,7 +141,7 @@ public class CommandNID {
 		}
 
 		String s = (global ? (ChatFormatting.RED + " (All dimensions included)") : "");
-		source.sendSuccess(new TextComponent(ChatFormatting.YELLOW + "Currently " + ChatFormatting.AQUA + number + ChatFormatting.YELLOW + " dropped Items exist!" + s), true);
+		source.sendSuccess(Component.literal(ChatFormatting.YELLOW + "Currently " + ChatFormatting.AQUA + number + ChatFormatting.YELLOW + " dropped Items exist!" + s), true);
 		return 1;
 	}
 

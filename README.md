@@ -1,4 +1,4 @@
-[![NoItemDespawn](https://github.com/Jomcraft-Network/NoItemDespawn/actions/workflows/build.yml/badge.svg?branch=1.18.x)](https://github.com/Jomcraft-Network/NoItemDespawn/actions/workflows/build.yml)
+[![NoItemDespawn](https://github.com/Jomcraft-Network/NoItemDespawn/actions/workflows/build.yml/badge.svg?branch=1.19.x)](https://github.com/Jomcraft-Network/NoItemDespawn/actions/workflows/build.yml)
 
 ### NoItemDespawn
 

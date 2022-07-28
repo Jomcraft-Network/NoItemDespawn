@@ -1,22 +1,10 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-    }
-}
-
 plugins {
-    id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id 'eclipse'
+    id 'net.minecraftforge.gradle' version '5.1.+'
+	id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
 
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
-
-version = "1.18.x-2.0.7"
-
+version = "1.19.x-2.0.7"
 def fileVersion = "2.0.7"
 
 group = 'net.jomcraft.noitemdespawn'
@@ -27,7 +15,7 @@ println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getPro
 
 minecraft {
 
-    mappings channel: 'official', version: '1.18.2'
+    mappings channel: 'official', version: '1.19.1'
 
     runs {
         client {
@@ -79,10 +67,10 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.1.68'
+    minecraft 'net.minecraftforge:forge:1.19.1-42.0.0'
 }
 
-def forge_version = "38.0.0"
+def forge_version = "42.0.0"
 
 processResources {
 
@@ -135,10 +123,9 @@ curseforge {
 	if(System.getenv("CURSE_API") != null && !System.getenv("CURSE_API").equals("")) {
 		apiKey = System.getenv("CURSE_API")
 		project {
-			id = '296938'
+			id = '285764'
 			releaseType = 'release'
-			addGameVersion '1.18.1'
-			addGameVersion '1.18.2'
+			addGameVersion '1.19.1'
 			mainArtifact(jar) {
 				displayName = "$archivesBaseName-$version"
 			}
