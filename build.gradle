@@ -14,22 +14,20 @@ plugins {
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
-apply plugin: 'signing'
 
-version = "1.17.x-2.0.7"
+version = "1.18.x-2.0.7"
 
 def fileVersion = "2.0.7"
 
-group = 'de.pt400c.noitemdespawn'
+group = 'net.jomcraft.noitemdespawn'
 archivesBaseName = 'NoItemDespawn'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
-
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 minecraft {
 
-    mappings channel: 'official', version: '1.17.1'
+    mappings channel: 'official', version: '1.18.2'
 
     runs {
         client {
@@ -81,10 +79,10 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.17.1-37.0.31'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.1.68'
 }
 
-def forge_version = "37.0.0"
+def forge_version = "38.0.0"
 
 processResources {
 
@@ -134,28 +132,26 @@ artifacts {
 jar.finalizedBy('reobfJar')
 
 curseforge {
-
-  if(project.hasProperty("cursegradle.api_token") && project.property("cursegradle.api_token") != null && !project.property("cursegradle.api_token").equals("")) {
-  	apiKey = project.property("cursegradle.api_token")
-  	project {
-    	id = '285764'
-    	releaseType = 'release'
-    	addGameVersion '1.17.1'
-
-    	mainArtifact(jar) {
-    		displayName = "$archivesBaseName-$version"
-    	}
+	if(System.getenv("CURSE_API") != null && !System.getenv("CURSE_API").equals("")) {
+		apiKey = System.getenv("CURSE_API")
+		project {
+			id = '296938'
+			releaseType = 'release'
+			addGameVersion '1.18.1'
+			addGameVersion '1.18.2'
+			mainArtifact(jar) {
+				displayName = "$archivesBaseName-$version"
+			}
     
-    	addArtifact (sourcesJar) {
-    		releaseType = 'release'
-    		displayName = "$archivesBaseName-$version-sources"
-    	}
+			addArtifact (sourcesJar) {
+				releaseType = 'release'
+				displayName = "$archivesBaseName-$version-sources"
+			}
     
-    	addArtifact (deobfJar) {
-    		releaseType = 'release'
-    		displayName = "$archivesBaseName-$version-deobf"
-    	}
-    
-  	}
-  }
+			addArtifact (deobfJar) {
+				releaseType = 'release'
+				displayName = "$archivesBaseName-$version-deobf"
+			}
+		}
+	}
 }

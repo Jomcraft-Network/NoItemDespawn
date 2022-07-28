@@ -1,16 +1,17 @@
 /* 
- *      NoItemDespawn - 1.16.5 <> Idea and codedesign by PT400C - Packet class
- *      © Jomcraft Network 2021
+ *		ServerPassword - 1.18.x <> Codedesign by Jomcraft Network
+ *		Â© Jomcraft-Network 2022
  */
-package de.pt400c.noitemdespawn;
+package net.jomcraft.noitemdespawn;
 
+import net.jomcraft.noitemdespawn.config.NIDConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
+
 import java.util.function.Supplier;
-import de.pt400c.noitemdespawn.config.NIDConfig;
 
 public final class MarkPacket {
 
@@ -43,16 +44,16 @@ public final class MarkPacket {
 		context.enqueueWork(() -> {
 			Iterable<Entity> iterator = Minecraft.getInstance().level.entitiesForRendering();
 			EventHooksFML.markedEntities.clear();
-			
-			for(Entity e : iterator) {
+
+			for (Entity e : iterator) {
 				if (e != null && e instanceof ItemEntity) {
-					if(CommandNID.distanceBetweenTwoPoints(e.getX(), e.getY(), e.getZ(), msg.x, msg.y, msg.z) <= msg.radius) {
+					if (CommandNID.distanceBetweenTwoPoints(e.getX(), e.getY(), e.getZ(), msg.x, msg.y, msg.z) <= msg.radius) {
 						EventHooksFML.markedEntities.put(e, NIDConfig.COMMON.markTicks.get());
 					}
 
 				}
 			}
-			if(EventHooksFML.markedEntities.size() > 0)
+			if (EventHooksFML.markedEntities.size() > 0)
 				EventHooksFML.rendering = true;
 		});
 		context.setPacketHandled(true);

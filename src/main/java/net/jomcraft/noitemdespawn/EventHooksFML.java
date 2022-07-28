@@ -1,25 +1,26 @@
 /* 
- *      NoItemDespawn - 1.16.5 <> Idea and codedesign by PT400C - Eventhandling class
- *      © Jomcraft Network 2021
+ *		ServerPassword - 1.18.x <> Codedesign by Jomcraft Network
+ *		Â© Jomcraft-Network 2022
  */
-package de.pt400c.noitemdespawn;
+package net.jomcraft.noitemdespawn;
 
 import java.util.HashMap;
 import java.util.List;
-import de.pt400c.noitemdespawn.config.NIDConfig;
+
+import net.jomcraft.noitemdespawn.config.NIDConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 
 public class EventHooksFML {
-	
+
 	public static HashMap<Entity, Integer> markedEntities = new HashMap<Entity, Integer>();
 	public static boolean rendering = false;
-	
+
 	@SubscribeEvent
 	public void despawnEvent(ItemExpireEvent event) {
 		if (!event.getEntity().level.isClientSide()) {
@@ -34,7 +35,7 @@ public class EventHooksFML {
 					number++;
 			}
 
-			if (NIDConfig.COMMON.despawnWhitelist.get().get(0).equals("*") ? (number < NIDConfig.COMMON.maxClumpSize.get()) :(number < NIDConfig.COMMON.maxClumpSize.get() || !NIDConfig.COMMON.despawnWhitelist.get().contains(event.getEntityItem().getItem().getItem().getRegistryName().toString()))) {
+			if (NIDConfig.COMMON.despawnWhitelist.get().get(0).equals("*") ? (number < NIDConfig.COMMON.maxClumpSize.get()) : (number < NIDConfig.COMMON.maxClumpSize.get() || !NIDConfig.COMMON.despawnWhitelist.get().contains(event.getEntityItem().getItem().getItem().getRegistryName().toString()))) {
 
 				event.getEntityItem().lifespan = 2000000000;
 				if (event.getEntityItem().age > 1999999997)
@@ -43,38 +44,38 @@ public class EventHooksFML {
 			}
 		}
 	}
-	
+
 	@SuppressWarnings("resource")
 	@SubscribeEvent
 	public void tickEvent2(RenderTickEvent event) {
-		
-		if(rendering) {
-		
-		if(Minecraft.getInstance().level == null || !Minecraft.getInstance().level.isClientSide())
-			return;
 
-		int rend = 0;
-		for(Entity e : markedEntities.keySet()) {
-			int value = markedEntities.get(e);
-			if (value > 1)
-				markedEntities.put(e, value - 1);
-			else {
-				continue;
+		if (rendering) {
+
+			if (Minecraft.getInstance().level == null || !Minecraft.getInstance().level.isClientSide())
+				return;
+
+			int rend = 0;
+			for (Entity e : markedEntities.keySet()) {
+				int value = markedEntities.get(e);
+				if (value > 1)
+					markedEntities.put(e, value - 1);
+				else {
+					continue;
+				}
+				e.setSecondsOnFire(1);
+				rend++;
 			}
-			e.setSecondsOnFire(1);
-			rend++;
-		}
-		if(rend == 0) {
-			markedEntities.clear();
-			rendering = false;
-		
-		}
+			if (rend == 0) {
+				markedEntities.clear();
+				rendering = false;
+
+			}
 
 		}
 	}
-	
+
 	@SubscribeEvent
-	public void serverStarting(FMLServerStartingEvent event) {
+	public void serverStarting(ServerStartingEvent event) {
 		CommandNID.register(event);
 	}
 

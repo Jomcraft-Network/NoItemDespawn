@@ -1,8 +1,8 @@
 /* 
- *      NoItemDespawn - 1.16.5 <> Idea and codedesign by PT400C - Config class
- *      © Jomcraft Network 2021
+ *		ServerPassword - 1.18.x <> Codedesign by Jomcraft Network
+ *		Â© Jomcraft-Network 2022
  */
-package de.pt400c.noitemdespawn.config;
+package net.jomcraft.noitemdespawn.config;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,13 +19,13 @@ public class NIDConfig {
 
 	public static class Common {
 		public final ForgeConfigSpec.IntValue maxDespawnRadius;
-		
+
 		public final ForgeConfigSpec.IntValue maxClumpSize;
-		
+
 		public final ForgeConfigSpec.IntValue clumpRadius;
-		
+
 		public final ForgeConfigSpec.ConfigValue<List<String>> despawnWhitelist;
-		
+
 		public final ForgeConfigSpec.IntValue markTicks;
 
 		Common(ForgeConfigSpec.Builder builder) {
@@ -33,22 +33,22 @@ public class NIDConfig {
 			builder.push("Common");
 
 			String desc = "Radius in which your users can despawn items";
-			maxDespawnRadius = builder.comment(desc).defineInRange("maxDespawnRadius", 10, 0, 900000000);
-			
+			this.maxDespawnRadius = builder.comment(desc).defineInRange("maxDespawnRadius", 10, 0, 900000000);
+
 			desc = "Maximum size of item clumps with the same itemtype";
-			maxClumpSize = builder.comment(desc).defineInRange("maxClumpSize", 10, 1, 10000);
-			
+			this.maxClumpSize = builder.comment(desc).defineInRange("maxClumpSize", 10, 1, 10000);
+
 			desc = "Radius which is used to determine whether item groups belong to clumps";
-			clumpRadius = builder.comment(desc).defineInRange("clumpRadius", 3, 1, 10);
-			
+			this.clumpRadius = builder.comment(desc).defineInRange("clumpRadius", 3, 1, 10);
+
 			ArrayList<String> arrayList = new ArrayList<String>();
 			arrayList.add("minecraft:egg");
-			
+
 			desc = "Whitelist of items to despawn in clumps. If all items in clumps should despawn, just place '*' in here.";
-			despawnWhitelist = builder.comment(desc).define("despawnWhitelist", arrayList);
-			
+			this.despawnWhitelist = builder.comment(desc).define("despawnWhitelist", arrayList);
+
 			desc = "How many ticks items will be marked for";
-			markTicks = builder.comment(desc).defineInRange("markTicks", 1000, 10, 100000);
+			this.markTicks = builder.comment(desc).defineInRange("markTicks", 1000, 10, 100000);
 
 			builder.pop();
 		}

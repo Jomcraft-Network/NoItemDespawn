@@ -1,10 +1,10 @@
 modLoader="javafml"
-loaderVersion="[37,)"
+loaderVersion="[38,)"
 license="Apache License 2.0"
 
 [[mods]] 
 	modId="noitemdespawn" 
-	version="${version}"
+	version="1.0.0"
 	displayName="NoItemDespawn"
 	description='''Items will no longer despawn, force-despawning works though'''
 	authors="PT400C - Jomcraft Network"
@@ -21,6 +21,6 @@ license="Apache License 2.0"
 [[dependencies.noitemdespawn]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.17,]"
+    versionRange="[1.18,]"
     ordering="NONE"
     side="BOTH"
