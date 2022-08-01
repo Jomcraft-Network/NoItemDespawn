@@ -16,11 +16,11 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'signing'
 
-version = "1.17.x-2.0.7"
+version = "1.17.x-2.0.8"
 
-def fileVersion = "2.0.7"
+def fileVersion = "2.0.8"
 
-group = 'de.pt400c.noitemdespawn'
+group = 'net.jomcraft.noitemdespawn'
 archivesBaseName = 'NoItemDespawn'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(16)
@@ -134,28 +134,25 @@ artifacts {
 jar.finalizedBy('reobfJar')
 
 curseforge {
-
-  if(project.hasProperty("cursegradle.api_token") && project.property("cursegradle.api_token") != null && !project.property("cursegradle.api_token").equals("")) {
-  	apiKey = project.property("cursegradle.api_token")
-  	project {
-    	id = '285764'
-    	releaseType = 'release'
-    	addGameVersion '1.17.1'
-
-    	mainArtifact(jar) {
-    		displayName = "$archivesBaseName-$version"
-    	}
+	if(System.getenv("CURSE_API") != null && !System.getenv("CURSE_API").equals("")) {
+		apiKey = System.getenv("CURSE_API")
+		project {
+			id = '285764'
+			releaseType = 'release'
+			addGameVersion '1.17.1'
+			mainArtifact(jar) {
+				displayName = "$archivesBaseName-$version"
+			}
     
-    	addArtifact (sourcesJar) {
-    		releaseType = 'release'
-    		displayName = "$archivesBaseName-$version-sources"
-    	}
+			addArtifact (sourcesJar) {
+				releaseType = 'release'
+				displayName = "$archivesBaseName-$version-sources"
+			}
     
-    	addArtifact (deobfJar) {
-    		releaseType = 'release'
-    		displayName = "$archivesBaseName-$version-deobf"
-    	}
-    
-  	}
-  }
+			addArtifact (deobfJar) {
+				releaseType = 'release'
+				displayName = "$archivesBaseName-$version-deobf"
+			}
+		}
+	}
 }

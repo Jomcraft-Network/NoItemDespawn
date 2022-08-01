@@ -1,6 +1,6 @@
 [![NoItemDespawn](https://github.com/Jomcraft-Network/NoItemDespawn/actions/workflows/build.yml/badge.svg?branch=1.17.x)](https://github.com/Jomcraft-Network/NoItemDespawn/actions/workflows/build.yml)
 
-### NoItemDespawn 1.17.1
+### NoItemDespawn
 
 ---
 
