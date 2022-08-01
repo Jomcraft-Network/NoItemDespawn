@@ -35,8 +35,24 @@ public class EventHooksFML {
 					number++;
 			}
 
-			if (NIDConfig.COMMON.despawnWhitelist.get().get(0).equals("*") ? (number < NIDConfig.COMMON.maxClumpSize.get()) : (number < NIDConfig.COMMON.maxClumpSize.get() || !NIDConfig.COMMON.despawnWhitelist.get().contains(event.getEntityItem().getItem().getItem().getRegistryName().toString()))) {
+			boolean noDespawn = false;
+			if (NIDConfig.COMMON.despawnWhitelist.get().get(0).equals("*")) {
+				if (!NIDConfig.COMMON.invertToBlacklist.get() && number < NIDConfig.COMMON.maxClumpSize.get()) {
+					noDespawn = true;
+				}
+			} else {
+				if (NIDConfig.COMMON.invertToBlacklist.get()) {
+					if (number < NIDConfig.COMMON.maxClumpSize.get() && NIDConfig.COMMON.despawnWhitelist.get().contains(event.getEntityItem().getItem().getItem().getRegistryName().toString())) {
+						noDespawn = true;
+					}
+				} else {
+					if (number < NIDConfig.COMMON.maxClumpSize.get() || !NIDConfig.COMMON.despawnWhitelist.get().contains(event.getEntityItem().getItem().getItem().getRegistryName().toString())) {
+						noDespawn = true;
+					}
+				}
+			}
 
+			if (noDespawn) {
 				event.getEntityItem().lifespan = 2000000000;
 				if (event.getEntityItem().age > 1999999997)
 					event.getEntityItem().age = 0;
