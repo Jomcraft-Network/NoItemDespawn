@@ -1,6 +1,6 @@
 /* 
- *      NoItemDespawn - 1.16.5 <> Idea and codedesign by PT400C - Config class
- *      © Jomcraft Network 2021
+ *		NoItemDespawn - 1.16.x <> Codedesign by Jomcraft Network
+ *		© Jomcraft-Network 2022
  */
 package de.pt400c.noitemdespawn.config;
 
