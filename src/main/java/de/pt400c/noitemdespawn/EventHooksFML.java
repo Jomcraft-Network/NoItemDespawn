@@ -16,10 +16,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
 public class EventHooksFML {
-	
+
 	public static HashMap<Entity, Integer> markedEntities = new HashMap<Entity, Integer>();
 	public static boolean rendering = false;
-	
+
 	@SubscribeEvent
 	public void despawnEvent(ItemExpireEvent event) {
 		if (!event.getEntity().level.isClientSide()) {
@@ -34,8 +34,24 @@ public class EventHooksFML {
 					number++;
 			}
 
-			if (NIDConfig.COMMON.despawnWhitelist.get().get(0).equals("*") ? (number < NIDConfig.COMMON.maxClumpSize.get()) :(number < NIDConfig.COMMON.maxClumpSize.get() || !NIDConfig.COMMON.despawnWhitelist.get().contains(event.getEntityItem().getItem().getItem().getRegistryName().toString()))) {
+			boolean noDespawn = false;
+			if (NIDConfig.COMMON.despawnWhitelist.get().get(0).equals("*")) {
+				if (!NIDConfig.COMMON.invertToBlacklist.get() && number < NIDConfig.COMMON.maxClumpSize.get()) {
+					noDespawn = true;
+				}
+			} else {
+				if (NIDConfig.COMMON.invertToBlacklist.get()) {
+					if (number < NIDConfig.COMMON.maxClumpSize.get() && NIDConfig.COMMON.despawnWhitelist.get().contains(event.getEntityItem().getItem().getItem().getRegistryName().toString())) {
+						noDespawn = true;
+					}
+				} else {
+					if (number < NIDConfig.COMMON.maxClumpSize.get() || !NIDConfig.COMMON.despawnWhitelist.get().contains(event.getEntityItem().getItem().getItem().getRegistryName().toString())) {
+						noDespawn = true;
+					}
+				}
+			}
 
+			if (noDespawn) {
 				event.getEntityItem().lifespan = 2000000000;
 				if (event.getEntityItem().age > 1999999997)
 					event.getEntityItem().age = 0;
@@ -43,36 +59,36 @@ public class EventHooksFML {
 			}
 		}
 	}
-	
+
 	@SuppressWarnings("resource")
 	@SubscribeEvent
 	public void tickEvent2(RenderTickEvent event) {
-		
-		if(rendering) {
-		
-		if(Minecraft.getInstance().level == null || !Minecraft.getInstance().level.isClientSide())
-			return;
 
-		int rend = 0;
-		for(Entity e : markedEntities.keySet()) {
-			int value = markedEntities.get(e);
-			if (value > 1)
-				markedEntities.put(e, value - 1);
-			else {
-				continue;
+		if (rendering) {
+
+			if (Minecraft.getInstance().level == null || !Minecraft.getInstance().level.isClientSide())
+				return;
+
+			int rend = 0;
+			for (Entity e : markedEntities.keySet()) {
+				int value = markedEntities.get(e);
+				if (value > 1)
+					markedEntities.put(e, value - 1);
+				else {
+					continue;
+				}
+				e.setSecondsOnFire(1);
+				rend++;
 			}
-			e.setSecondsOnFire(1);
-			rend++;
-		}
-		if(rend == 0) {
-			markedEntities.clear();
-			rendering = false;
-		
-		}
+			if (rend == 0) {
+				markedEntities.clear();
+				rendering = false;
+
+			}
 
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void serverStarting(FMLServerStartingEvent event) {
 		CommandNID.register(event);

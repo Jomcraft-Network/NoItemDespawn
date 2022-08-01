@@ -44,16 +44,16 @@ public final class MarkPacket {
 		context.enqueueWork(() -> {
 			Iterable<Entity> iterator = Minecraft.getInstance().level.entitiesForRendering();
 			EventHooksFML.markedEntities.clear();
-			
-			for(Entity e : iterator) {
+
+			for (Entity e : iterator) {
 				if (e != null && e instanceof ItemEntity) {
-					if(CommandNID.distanceBetweenTwoPoints(e.getX(), e.getY(), e.getZ(), msg.x, msg.y, msg.z) <= msg.radius) {
+					if (CommandNID.distanceBetweenTwoPoints(e.getX(), e.getY(), e.getZ(), msg.x, msg.y, msg.z) <= msg.radius) {
 						EventHooksFML.markedEntities.put(e, NIDConfig.COMMON.markTicks.get());
 					}
 
 				}
 			}
-			if(EventHooksFML.markedEntities.size() > 0)
+			if (EventHooksFML.markedEntities.size() > 0)
 				EventHooksFML.rendering = true;
 		});
 		context.setPacketHandled(true);
