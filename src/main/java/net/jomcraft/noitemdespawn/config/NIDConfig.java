@@ -24,6 +24,8 @@ public class NIDConfig {
 
 		public final ForgeConfigSpec.IntValue clumpRadius;
 
+		public final ForgeConfigSpec.BooleanValue invertToBlacklist;
+
 		public final ForgeConfigSpec.ConfigValue<List<String>> despawnWhitelist;
 
 		public final ForgeConfigSpec.IntValue markTicks;
@@ -43,6 +45,9 @@ public class NIDConfig {
 
 			ArrayList<String> arrayList = new ArrayList<String>();
 			arrayList.add("minecraft:egg");
+
+			desc = "If true, the whitelist will act as a blacklist";
+			this.invertToBlacklist = builder.comment(desc).define("invertToBlacklist", false);
 
 			desc = "Whitelist of items to despawn in clumps. If all items in clumps should despawn, just place '*' in here.";
 			this.despawnWhitelist = builder.comment(desc).define("despawnWhitelist", arrayList);

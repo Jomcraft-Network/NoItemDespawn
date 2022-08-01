@@ -36,8 +36,24 @@ public class EventHooksFML {
 					number++;
 			}
 
-			if (NIDConfig.COMMON.despawnWhitelist.get().get(0).equals("*") ? (number < NIDConfig.COMMON.maxClumpSize.get()) : (number < NIDConfig.COMMON.maxClumpSize.get() || !NIDConfig.COMMON.despawnWhitelist.get().contains(Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(event.getEntity().getItem().getItem()).toString())))) {
+			boolean noDespawn = false;
+			if (NIDConfig.COMMON.despawnWhitelist.get().get(0).equals("*")) {
+				if (!NIDConfig.COMMON.invertToBlacklist.get() && number < NIDConfig.COMMON.maxClumpSize.get()) {
+					noDespawn = true;
+				}
+			} else {
+				if (NIDConfig.COMMON.invertToBlacklist.get()) {
+					if (number < NIDConfig.COMMON.maxClumpSize.get() && NIDConfig.COMMON.despawnWhitelist.get().contains(Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(event.getEntity().getItem().getItem()).toString()))) {
+						noDespawn = true;
+					}
+				} else {
+					if (number < NIDConfig.COMMON.maxClumpSize.get() || !NIDConfig.COMMON.despawnWhitelist.get().contains(Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(event.getEntity().getItem().getItem()).toString()))) {
+						noDespawn = true;
+					}
+				}
+			}
 
+			if (noDespawn) {
 				event.getEntity().lifespan = 2000000000;
 				if (event.getEntity().age > 1999999997)
 					event.getEntity().age = 0;
