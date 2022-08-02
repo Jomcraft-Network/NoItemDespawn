@@ -4,8 +4,8 @@ plugins {
 	id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
 
-version = "1.19.x-2.0.8"
-def fileVersion = "2.0.8"
+version = "1.19.x-2.0.9"
+def fileVersion = "2.0.9"
 
 group = 'net.jomcraft.noitemdespawn'
 archivesBaseName = 'NoItemDespawn'
