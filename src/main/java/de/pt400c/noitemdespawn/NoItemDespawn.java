@@ -23,11 +23,11 @@ public class NoItemDespawn {
 
 	public static final String MODID = "noitemdespawn";
 	public static final Logger log = LogManager.getLogger(NoItemDespawn.MODID);
-	public static final String VERSION = "2.0.8";
+	public static final String VERSION = "2.0.9";
 
 	public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	private static final String NETWORK_PROTOCOL_VERSION = "1";
-	public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation(MODID, "main"), () -> NETWORK_PROTOCOL_VERSION, NETWORK_PROTOCOL_VERSION::equals, NETWORK_PROTOCOL_VERSION::equals);
+	public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation(MODID, "main"), () -> NETWORK_PROTOCOL_VERSION, (serverVersion) -> true, (clientVersion) -> true);
 	public static NoItemDespawn instance;
 
 	public NoItemDespawn() throws Exception {
