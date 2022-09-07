@@ -1,4 +1,4 @@
-### NoItemDespawn [![NoItemDespawn](https://github.com/Jomcraft-Network/NoItemDespawn/actions/workflows/build.yml/badge.svg?branch=1.18.x)](https://github.com/Jomcraft-Network/NoItemDespawn/actions/workflows/build.yml) [![NoItemDespawn](http://cf.way2muchnoise.eu/285764.svg)](https://www.curseforge.com/minecraft/mc-mods/noitemdespawn) [![NoItemDespawn](http://cf.way2muchnoise.eu/versions/285764.svg)](https://www.curseforge.com/minecraft/mc-mods/noitemdespawn)
+### NoItemDespawn [![Version](https://badgen.net/https/apiv3.jomcraft.net/product/noitemdespawn%3Fendpoint%3Dforge?cache=3600)](https://github.com/Jomcraft-Network/NoItemDespawn) [![NoItemDespawn](https://github.com/Jomcraft-Network/NoItemDespawn/actions/workflows/build.yml/badge.svg?branch=1.18.x)](https://github.com/Jomcraft-Network/NoItemDespawn/actions/workflows/build.yml) [![NoItemDespawn](http://cf.way2muchnoise.eu/285764.svg)](https://www.curseforge.com/minecraft/mc-mods/noitemdespawn) [![NoItemDespawn](http://cf.way2muchnoise.eu/versions/285764.svg)](https://www.curseforge.com/minecraft/mc-mods/noitemdespawn)
 
 ---
 
