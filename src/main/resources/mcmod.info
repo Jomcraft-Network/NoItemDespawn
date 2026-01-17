@@ -1,0 +1,16 @@
+[
+{
+  "modid": "noitemdespawn",
+  "name": "NoItemDespawn",
+  "description": "This mod gives the user the ability of modifying item-despawn on server- or clientside.",
+  "version": "NID-VERSION",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["PT400C"],
+  "credits": "PT400C and the FML team",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
