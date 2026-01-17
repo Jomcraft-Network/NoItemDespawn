@@ -1,12 +1,14 @@
 package net.jomcraft.noitemdespawn;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -32,6 +34,7 @@ public class EventHooksFML {
 
                 config.syncConfiguration();
                 NoItemDespawn.despawnTime = config.cooldown;
+                NoItemDespawn.blacklist = Arrays.asList(config.blacklist);
 
             }
         }
@@ -49,29 +52,28 @@ public class EventHooksFML {
         for (Object entity : Minecraft.getMinecraft().theWorld.loadedEntityList)
             if (entity instanceof EntityItem) {
 
-                EntityItem e = (EntityItem) entity;
+                Entity e = (Entity) entity;
                 EntityClientPlayerMP ep = Minecraft.getMinecraft().thePlayer;
                 if (!millis.containsKey(ep))
                     break;
-                if (!itemList.contains(e)) {
+                if (!itemList.contains((EntityItem) e)) {
                     if (!(millis.get(ep) + 30000 < System.currentTimeMillis())) {
 
                         double distance = distanceSquareToCenterCO(x.get(ep), y.get(ep), z.get(ep), e.posX, e.posY, e.posZ);
                         if ((radius.get(ep) * radius.get(ep)) < 0 || distance <= (radius.get(ep) * radius.get(ep))) {
 
-                            e.glowing = true;
-                            itemList.add(e);
-
+                            ((InterfaceEntityItem) e).setGlowing(true);
+                            itemList.add((EntityItem) e);
 
                         } else {
-                            e.glowing = false;
-                            itemList.remove(e);
+                            ((InterfaceEntityItem) e).setGlowing(false);
+                            itemList.remove((EntityItem) e);
                         }
                     }
                 } else {
                     if (millis.get(ep) + 30000 < System.currentTimeMillis()) {
-                        e.glowing = false;
-                        itemList.remove(e);
+                        ((InterfaceEntityItem) e).setGlowing(false);
+                        itemList.remove((EntityItem) e);
                     }
                 }
 

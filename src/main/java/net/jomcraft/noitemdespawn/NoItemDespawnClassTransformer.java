@@ -1,5 +1,7 @@
 package net.jomcraft.noitemdespawn;
 
+
+import net.minecraft.item.Item;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.AnnotationVisitor;
@@ -8,17 +10,21 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
+import org.objectweb.asm.util.Printer;
+import org.objectweb.asm.util.Textifier;
+import org.objectweb.asm.util.TraceMethodVisitor;
+
 import static org.objectweb.asm.Opcodes.*;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+
+import java.io.*;
 import java.util.Arrays;
 
 public class NoItemDespawnClassTransformer implements IClassTransformer {
-    private static final String[] classesToTransform = {
+    @Override
+    public byte[] transform(String name, String transformedName, byte[] basicClass) {
+        return new byte[0];
+    }
+   /* private static final String[] classesToTransform = {
             "net.minecraft.entity.item.EntityItem",
             "net.minecraft.item.Item",
     };
@@ -61,9 +67,10 @@ public class NoItemDespawnClassTransformer implements IClassTransformer {
             e.printStackTrace();
         }
 
-    }
+    }*/
 
-    private byte[] transform(int c_index, byte[] classToTransform, boolean isObfuscated, String name, String transformedName) {
+  /*  private byte[] transform(int c_index, byte[] classToTransform, boolean isObfuscated, String name, String transformedName) {
+
         NoItemDespawn.log(Level.INFO, "Transforming: " + classesToTransform[c_index]);
         boolean infinit = false;
         try {
@@ -115,15 +122,15 @@ public class NoItemDespawnClassTransformer implements IClassTransformer {
                 switch (c_index) {
 
                     case 0:
-                        addFieldBurn(classNode, isObfuscated);
+                       // addFieldBurn(classNode, isObfuscated);
                         transformDSEvent(classNode, isObfuscated, infinit);
                         transformFieldGlobal(classNode, isObfuscated);
                         transformMethodGlobal(classNode, isObfuscated);
 
-                        addMethodBurn(classNode, isObfuscated);
-                        addMethodOverlay(classNode, isObfuscated);
+                        //addMethodBurn(classNode, isObfuscated);
+                        //addMethodOverlay(classNode, isObfuscated);
                     case 1:
-                        transformItemClass(classNode, isObfuscated);
+                       // transformItemClass(classNode, isObfuscated);
                         break;
                 }
             } else {
@@ -136,9 +143,9 @@ public class NoItemDespawnClassTransformer implements IClassTransformer {
             e.printStackTrace();
         }
         return classToTransform;
-    }
+    }*/
 
-    private static void addMethodOverlay(ClassNode mainClass, boolean isObfuscated) {
+    /*private static void addMethodOverlay(ClassNode mainClass, boolean isObfuscated) {
         if (mainClass.name.equals("net/minecraft/entity/item/EntityItem") || mainClass.name.equals("xk")) {
             MethodNode mn = new MethodNode(ACC_PUBLIC, (isObfuscated ? "aA" : "func_90999_ad"), "()Z", null, null);
             AnnotationVisitor av0 = mn.visitAnnotation("Lcpw/mods/fml/relauncher/SideOnly;", true);
@@ -164,9 +171,9 @@ public class NoItemDespawnClassTransformer implements IClassTransformer {
 
             NoItemDespawn.log(Level.INFO, "Added fire method!");
         }
-    }
+    }*/
 
-    private static void addMethodBurn(ClassNode mainClass, boolean isObfuscated) {
+    /*private static void addMethodBurn(ClassNode mainClass, boolean isObfuscated) {
         if (mainClass.name.equals("net/minecraft/entity/item/EntityItem") || mainClass.name.equals("xk")) {
             MethodNode mn = new MethodNode(ACC_PUBLIC, (isObfuscated ? "c" : "func_70070_b"), "(F)I", null, null);
             AnnotationVisitor av0 = mn.visitAnnotation("Lcpw/mods/fml/relauncher/SideOnly;", true);
@@ -250,15 +257,15 @@ public class NoItemDespawnClassTransformer implements IClassTransformer {
 
             NoItemDespawn.log(Level.INFO, "Added glowing method!");
         }
-    }
+    }*/
 
-    private static void addFieldBurn(ClassNode mainClass, boolean isObfuscated) {
+    /*private static void addFieldBurn(ClassNode mainClass, boolean isObfuscated) {
         if (isObfuscated) {
             mainClass.visitField(ACC_PUBLIC, "glowing", "Z", null, ICONST_0);
             NoItemDespawn.log(Level.INFO, "Added glowing field!");
         }
-    }
-
+    }*/
+/*
     private static void transformFieldGlobal(ClassNode mainClass, boolean isObfuscated) {
         final String FIELD_NAME = isObfuscated ? "<init>" : "<init>";
 
@@ -321,9 +328,9 @@ public class NoItemDespawnClassTransformer implements IClassTransformer {
             }
         }
 
-    }
+    }*/
 
-    private static void transformItemClass(ClassNode mainClass, boolean isObfuscated) {
+    /*private static void transformItemClass(ClassNode mainClass, boolean isObfuscated) {
 
         final String CLASS_NAME = isObfuscated ? "getEntityLifespan" : "getEntityLifespan";
 
@@ -368,8 +375,8 @@ public class NoItemDespawnClassTransformer implements IClassTransformer {
             }
         }
 
-    }
-
+    }*/
+/*
     private static void transformDSEvent(ClassNode mainClass, boolean isObfuscated, boolean infinit) {
 
         final String EVENT_NAME = isObfuscated ? "h" : "func_70071_h_";
@@ -498,5 +505,5 @@ public class NoItemDespawnClassTransformer implements IClassTransformer {
         }
 
     }
-
+*/
 }

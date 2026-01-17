@@ -58,7 +58,47 @@ def getFile(String relativePath) {
 
 final String modGroupPath = group.replace('.' as char, '/' as char)
 
+def accessTransformersFile = "noitemdespawn_at.cfg"
+
+if (accessTransformersFile) {
+    for (atFile in accessTransformersFile.split(",")) {
+        String targetFile = "src/main/resources/META-INF/" + atFile.trim()
+        if (!getFile(targetFile).exists()) {
+            throw new GradleException("Could not resolve \"accessTransformersFile\"! Could not find " + targetFile)
+        }
+        tasks.deobfuscateMergedJarToSrg.accessTransformerFiles.from(targetFile)
+        tasks.srgifyBinpatchedJar.accessTransformerFiles.from(targetFile)
+    }
+} else {
+    boolean atsFound = false
+    for (File at : sourceSets.getByName("main").resources.files) {
+        if (at.name.toLowerCase().endsWith("_at.cfg")) {
+            atsFound = true
+            tasks.deobfuscateMergedJarToSrg.accessTransformerFiles.from(at)
+            tasks.srgifyBinpatchedJar.accessTransformerFiles.from(at)
+        }
+    }
+    for (File at : sourceSets.getByName("api").resources.files) {
+        if (at.name.toLowerCase().endsWith("_at.cfg")) {
+            atsFound = true
+            tasks.deobfuscateMergedJarToSrg.accessTransformerFiles.from(at)
+            tasks.srgifyBinpatchedJar.accessTransformerFiles.from(at)
+        }
+    }
+    if (atsFound) {
+        logger.warn("Found and added access transformers in the resources folder, please configure gradle.properties to explicitly mention them by name")
+    }
+}
+
 String javaSourceDir = "src/main/java/"
+
+final String mixinPackagePath = "mixins"
+final String mixinPluginPath = "plugin"
+
+String targetPackageJava = javaSourceDir + modGroupPath + "/" + mixinPackagePath
+if (!(getFile(targetPackageJava).exists())) {
+    throw new GradleException("Could not resolve \"mixinsPackage\"! Could not find " + targetPackageJava)
+}
 
 def replaceGradleTokenInFile = "NoItemDespawn.java"
 
@@ -78,6 +118,15 @@ minecraft {
 
     groupsToExcludeFromAutoReobfMapping.addAll(["com.diffplug", "com.diffplug.durian", "net.industrial-craft"])
 }
+
+def mixinProviderGroup = "io.github.legacymoddingmc"
+def mixinProviderModule = "unimixins"
+def mixinProviderVersion = "0.1.11"
+def mixinProviderSpecNoClassifer = "${mixinProviderGroup}:${mixinProviderModule}:${mixinProviderVersion}"
+def mixinProviderSpec = "${mixinProviderSpecNoClassifer}:dev"
+ext.mixinProviderSpec = mixinProviderSpec
+
+def mixingConfigRefMap = 'mixins.noitemdespawn.refmap.json'
 
 repositories {
     maven {
@@ -142,14 +191,22 @@ repositories {
 }
 
 dependencies {
-
+	annotationProcessor('org.ow2.asm:asm-debug-all:5.0.3')
+    annotationProcessor('com.google.guava:guava:24.1.1-jre')
+    annotationProcessor('com.google.code.gson:gson:2.8.6')
+    annotationProcessor(mixinProviderSpec)
+    implementation(modUtils.enableMixins(mixinProviderSpec, mixingConfigRefMap))
 }
 
 jar {
     exclude('net/minecraft/**')
     manifest {
         attributes("FMLCorePluginContainsFMLMod": "true")
-        attributes 'FMLCorePlugin': 'net.jomcraft.noitemdespawn.NoItemDespawnPlugin'
+       // attributes 'FMLCorePlugin': 'net.jomcraft.noitemdespawn.NoItemDespawnPlugin'
+		attributes("FMLAT": "noitemdespawn_at.cfg")
+        attributes("TweakClass": "org.spongepowered.asm.launch.MixinTweaker")
+        attributes("MixinConfigs": "mixins.noitemdespawn.json")
+        attributes("ForceLoadAsMod": true)
     }
 }
 

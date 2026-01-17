@@ -1,4 +1,4 @@
-package net.jomcraft.noitemdespawn;
+/*package net.jomcraft.noitemdespawn;
 
 import java.util.Map;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
@@ -36,3 +36,4 @@ public class NoItemDespawnPlugin implements IFMLLoadingPlugin {
     }
 
 }
+*/

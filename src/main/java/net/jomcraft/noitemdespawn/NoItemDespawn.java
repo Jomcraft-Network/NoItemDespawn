@@ -1,6 +1,8 @@
 package net.jomcraft.noitemdespawn;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -23,6 +25,7 @@ public class NoItemDespawn {
     public static final String VERSION = "1.7.10-2.0.0";
     public static final String modGuiFactory = "net.jomcraft.noitemdespawn.GuiConfigFactory";
     public static int despawnTime = 6000;
+    public static List<String> blacklist;
     private static ConfigFile config;
     public static PacketPipeline packetPipeline;
     public static boolean requiresRestart;
@@ -43,13 +46,10 @@ public class NoItemDespawn {
     }
 
     public static NoItemDespawn instance() {
-
         if (instance == null) {
             instance = new NoItemDespawn();
         }
-        Boolean lol = false;
         return instance;
-
     }
 
     @EventHandler
@@ -71,12 +71,19 @@ public class NoItemDespawn {
         }
         config = new ConfigFile(e.getSuggestedConfigurationFile());
         packetPipeline.registerPackets();
+
+        NoItemDespawn.getConfig().getInstance().load();
+
+        if (!NoItemDespawn.requiresRestart) {
+            config.syncConfiguration();
+            NoItemDespawn.despawnTime = config.cooldown;
+            NoItemDespawn.blacklist = Arrays.asList(config.blacklist);
+        }
     }
 
     @EventHandler
     public void serverLoad(FMLServerStartingEvent e) {
         e.registerServerCommand((ICommand) new CommandChange());
-
     }
 
     public static void log(Level level, String msg) {

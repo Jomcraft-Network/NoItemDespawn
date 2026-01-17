@@ -10,8 +10,8 @@ import net.minecraftforge.common.config.Configuration;
 
 public final class ConfigFile implements Serializable {
     private transient final Configuration config;
-
     public int cooldown;
+    public String [] blacklist;
 
     public ConfigFile(File file) {
         config = new Configuration(file);
@@ -21,6 +21,7 @@ public final class ConfigFile implements Serializable {
     private void addConfigValues() {
         config.setCategoryComment("Main", "Settings which apply as main configuration of the mod.");
         cooldown = config.get("Main", "Despawn-cooldown", 6000, "The custom despawn-cooldown of dropped items.").getInt();
+        blacklist = config.get("Main", "Item-blacklist", new String[]{"item.egg"}, "List of items that should ignore the despawn-cooldown.").getStringList();
         config.save();
     }
 

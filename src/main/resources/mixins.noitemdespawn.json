@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "net.jomcraft.noitemdespawn.mixins",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "mixins.noitemdespawn.refmap.json",
+  "mixins": [
+    "common/MixinItem",
+    "common/MixinEntityItemCommon"
+  ],
+  "client": [
+    "client/MixinEntityItemClient"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}

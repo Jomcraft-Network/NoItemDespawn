@@ -19,7 +19,6 @@ public class GuiConfigFactory implements IModGuiFactory {
 
     @Override
     public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
-
         return null;
     }
 

@@ -61,12 +61,6 @@ public class CommandChange implements ICommand {
 
     @Override
     public void processCommand(ICommandSender sender, String[] argString) {
-
-        if (!NoItemDespawnClassTransformer.active) {
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "The mod has not been activated!"));
-            return;
-        }
-
         if (sender instanceof EntityPlayerMP && !(((EntityPlayerMP) sender).mcServer.getConfigurationManager().func_152596_g(((EntityPlayerMP) sender).getGameProfile()))) {
             sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "You are not permitted to execute this command!"));
             return;
@@ -94,7 +88,7 @@ public class CommandChange implements ICommand {
                             Entity e = (Entity) iterator.next();
                             if (e != null && e instanceof EntityItem) {
                                 EntityItem eI = (EntityItem) e;
-                                if (NoItemDespawn.despawnTime != Integer.MAX_VALUE) {
+                                if (NoItemDespawn.despawnTime > -1) {
 
                                     if (argString.length == 2) {
 
@@ -145,8 +139,6 @@ public class CommandChange implements ICommand {
                                     }
 
                                 } else {
-
-
                                     sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.RED + " You cannot use this command:"));
                                     sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.GOLD + " The despawn-cooldown is infinite!"));
                                     return;
