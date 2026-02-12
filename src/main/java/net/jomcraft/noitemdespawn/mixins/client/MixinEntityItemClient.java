@@ -24,8 +24,7 @@ public abstract class MixinEntityItemClient extends Entity implements InterfaceE
     @SideOnly(Side.CLIENT)
     @Override
     public int getBrightnessForRender(float paramFloat) {
-        if (this.glowing)
-            return 15728880;
+        if (this.glowing) return 15728880;
         return super.getBrightnessForRender(paramFloat);
     }
 

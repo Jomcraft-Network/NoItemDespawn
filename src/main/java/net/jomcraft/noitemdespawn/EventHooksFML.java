@@ -24,7 +24,6 @@ public class EventHooksFML {
 
     @SubscribeEvent
     public void onConfigChanges(ConfigChangedEvent.OnConfigChangedEvent event) {
-
         if (event.modID.equals(NoItemDespawn.MODID)) {
 
             ConfigFile config = NoItemDespawn.getConfig();
@@ -76,9 +75,6 @@ public class EventHooksFML {
                         itemList.remove((EntityItem) e);
                     }
                 }
-
             }
-
     }
-
 }

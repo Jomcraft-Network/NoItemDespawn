@@ -42,10 +42,8 @@ public class PacketPipeline {
         }
     }
 
-
     public void sendTo(IMessage message, EntityPlayerMP player) {
         dispatcher.sendTo(message, player);
     }
-
 
 }

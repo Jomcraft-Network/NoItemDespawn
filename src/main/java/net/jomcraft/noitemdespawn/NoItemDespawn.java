@@ -94,5 +94,4 @@ public class NoItemDespawn {
         return config;
     }
 
-
 }

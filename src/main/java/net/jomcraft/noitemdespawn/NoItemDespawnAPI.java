@@ -2,6 +2,7 @@ package net.jomcraft.noitemdespawn;
 
 public class NoItemDespawnAPI {
 
+    //TODO: Maybe remove!
     public static boolean changeDSTime(Integer value, boolean runtime) {
 
         Integer current = NoItemDespawn.instance().despawnTime;
@@ -40,6 +41,7 @@ public class NoItemDespawnAPI {
 
     }
 
+    //TODO: Maybe remove!
     public static Integer currentCooldown() {
         Integer cooldown = NoItemDespawn.instance().despawnTime;
         if (cooldown == Integer.MAX_VALUE)

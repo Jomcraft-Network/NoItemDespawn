@@ -8,13 +8,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 
 public abstract class AbstractPacketHandler<T extends IMessage> implements IMessageHandler<T, IMessage> {
+
     @SideOnly(Side.CLIENT)
     public abstract IMessage handleClientMessage(EntityPlayer player, T message, MessageContext ctx);
 
     public abstract IMessage handleServerMessage(EntityPlayer player, T message, MessageContext ctx);
 
-    @Override
-    public IMessage onMessage(T message, MessageContext ctx) {
+    @Override public IMessage onMessage(T message, MessageContext ctx) {
         if (ctx.side.isClient()) {
             return handleClientMessage(NoItemDespawn.proxy.getPlayerEntitys(ctx), message, ctx);
         } else {

@@ -20,6 +20,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ChatComponentText;
 
 public class GuiConfigNID extends GuiConfig {
+
     public GuiConfigNID(GuiScreen parent) {
         this(parent, NoItemDespawn.getConfig().getCategories(),
                 NoItemDespawn.MODID, false, false, "NoItemDespawn - Config");

@@ -9,6 +9,7 @@ import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 
 public final class ConfigFile implements Serializable {
+
     private transient final Configuration config;
     public int cooldown;
     public String [] blacklist;

@@ -18,6 +18,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.WorldServer;
 
 public class CommandChange implements ICommand {
+
     private final List aliases;
     public static HashMap<EntityPlayer, Double> x = new HashMap<EntityPlayer, Double>();
     public static HashMap<EntityPlayer, Double> y = new HashMap<EntityPlayer, Double>();
@@ -28,55 +29,38 @@ public class CommandChange implements ICommand {
 
     public CommandChange() {
         aliases = new ArrayList();
-
         aliases.add("noitemdespawn");
-
         aliases.add("nid");
-
     }
 
-    @Override
-    public int compareTo(Object o) {
+    @Override public int compareTo(Object o) {
         return 0;
-
     }
 
-    @Override
-    public String getCommandName() {
+    @Override public String getCommandName() {
         return "noitemdespawn";
-
     }
 
-    @Override
-    public String getCommandUsage(ICommandSender var1) {
+    @Override public String getCommandUsage(ICommandSender var1) {
         return "/nid <argument> [value]";
-
     }
 
-    @Override
-    public List getCommandAliases() {
+    @Override public List getCommandAliases() {
         return this.aliases;
-
     }
 
-    @Override
-    public void processCommand(ICommandSender sender, String[] argString) {
+    @Override public void processCommand(ICommandSender sender, String[] argString) {
         if (sender instanceof EntityPlayerMP && !(((EntityPlayerMP) sender).mcServer.getConfigurationManager().func_152596_g(((EntityPlayerMP) sender).getGameProfile()))) {
             sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "You are not permitted to execute this command!"));
             return;
         }
 
         if (argString.length == 0) {
+            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.YELLOW + " Please specify an argument!"));
 
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]"
-                    + EnumChatFormatting.YELLOW + " Please specify an argument!"));
-
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]"
-                    + EnumChatFormatting.AQUA + " Choose from: " + EnumChatFormatting.GOLD + "dstime" + EnumChatFormatting.DARK_GREEN + "," + EnumChatFormatting.GOLD + " dsconfig" + EnumChatFormatting.DARK_GREEN + ","));
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]"
-                    + EnumChatFormatting.GOLD + " updateTime" + EnumChatFormatting.DARK_GREEN + "," + EnumChatFormatting.GOLD + " despawn " + EnumChatFormatting.DARK_GREEN + "or" + EnumChatFormatting.GOLD + " count"));
+            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.AQUA + " Choose from: " + EnumChatFormatting.GOLD + "dstime" + EnumChatFormatting.DARK_GREEN + "," + EnumChatFormatting.GOLD + " dsconfig" + EnumChatFormatting.DARK_GREEN + ","));
+            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.GOLD + " updateTime" + EnumChatFormatting.DARK_GREEN + "," + EnumChatFormatting.GOLD + " despawn " + EnumChatFormatting.DARK_GREEN + "or" + EnumChatFormatting.GOLD + " count"));
             return;
-
         }
         if (argString.length == 1 || argString.length == 2) {
             if (argString[0].equals("updateTime")) {
@@ -93,11 +77,9 @@ public class CommandChange implements ICommand {
                                     if (argString.length == 2) {
 
                                         try {
-
                                             Double.parseDouble(argString[1]);
 
                                         } catch (Exception exc) {
-
                                             sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.RED + " Please enter a valid value!"));
                                             break;
                                         }
@@ -105,7 +87,6 @@ public class CommandChange implements ICommand {
                                         if (sender instanceof EntityPlayer) {
 
                                             try {
-
                                                 EntityPlayer ep = (EntityPlayer) sender;
                                                 if (ep.dimension == eI.dimension) {
                                                     final double radius = Double.parseDouble(argString[1]);
@@ -123,19 +104,16 @@ public class CommandChange implements ICommand {
                                                 break;
                                             }
 
-
                                         } else {
                                             eI.age = 0;
                                             eI.lifespan = NoItemDespawn.despawnTime;
                                             edited++;
-
                                         }
 
                                     } else {
                                         eI.age = 0;
                                         eI.lifespan = NoItemDespawn.despawnTime;
                                         edited++;
-
                                     }
 
                                 } else {
@@ -143,12 +121,11 @@ public class CommandChange implements ICommand {
                                     sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.GOLD + " The despawn-cooldown is infinite!"));
                                     return;
                                 }
-
                             }
-
                         }
                     }
                 }
+
                 sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "] " + EnumChatFormatting.GOLD + edited + EnumChatFormatting.AQUA + " items have been modified!"));
                 return;
             } else if (argString[0].equals("dstime") && argString.length == 2) {
@@ -163,9 +140,7 @@ public class CommandChange implements ICommand {
                         return;
                     }
 
-                    sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.AQUA + " Changed despawn-time from "
-                            + EnumChatFormatting.GOLD + dTime + EnumChatFormatting.AQUA + " to: "
-                            + EnumChatFormatting.GOLD + value + EnumChatFormatting.AQUA + "!"));
+                    sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.AQUA + " Changed despawn-time from " + EnumChatFormatting.GOLD + dTime + EnumChatFormatting.AQUA + " to: " + EnumChatFormatting.GOLD + value + EnumChatFormatting.AQUA + "!"));
 
                     NoItemDespawn.instance().despawnTime = value;
                     NoItemDespawn.getConfig().getInstance().get("Main", "Despawn-cooldown", 6000, "The custom despawn-cooldown of dropped items.").set(value);
@@ -183,13 +158,8 @@ public class CommandChange implements ICommand {
                     Integer value = Integer.parseInt(argString[1]);
                     Integer dTime = NoItemDespawn.getConfig().cooldown;
 
-
-                    sender.addChatMessage(
-                            new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.AQUA + " Changed despawn-time in config from "
-                                    + EnumChatFormatting.GOLD + (dTime < 0 ? "infinite" : dTime) + EnumChatFormatting.AQUA + " to: "
-                                    + EnumChatFormatting.GOLD + (value < 0 ? "infinite" : value) + EnumChatFormatting.AQUA + "!"));
+                    sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.AQUA + " Changed despawn-time in config from " + EnumChatFormatting.GOLD + (dTime < 0 ? "infinite" : dTime) + EnumChatFormatting.AQUA + " to: " + EnumChatFormatting.GOLD + (value < 0 ? "infinite" : value) + EnumChatFormatting.AQUA + "!"));
                     sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.RED + " This will only apply after a restart!"));
-
 
                     NoItemDespawn.getConfig().getInstance().get("Main", "Despawn-cooldown", 6000, "The custom despawn-cooldown of dropped items.").set(value);
                     NoItemDespawn.getConfig().getInstance().save();
@@ -208,38 +178,16 @@ public class CommandChange implements ICommand {
                         if (e != null && e instanceof EntityItem) {
 
                             try {
-
                                 Double.parseDouble(argString[1]);
 
                             } catch (Exception exc) {
-
                                 sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.RED + " Please enter a valid value!"));
                                 break;
                             }
 
                             if (sender instanceof EntityPlayer) {
-										
-										/*try {
-											
-											EntityPlayer ep = (EntityPlayer) sender;
-											if(ep.dimension == e.dimension) {
-									        final double radius = Double.parseDouble(argString[1]);
-											double distance = distanceSquareToCenterCO(ep.posX, ep.posY, ep.posZ, e.posX, e.posY, e.posZ);
-											if((radius * radius) < 0 || distance <= (radius * radius)) {
-												deleted++;
-												e.setDead();
-											}
-											}
-										}catch(Exception exc) {
-											
-											NoItemDespawn.log(Level.ERROR,  org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(exc));
-											break;
-										}
-										
-										*/
 
                                 try {
-
                                     EntityPlayer ep = (EntityPlayer) sender;
                                     if (ep.dimension == e.dimension) {
                                         final double radiusF = Double.parseDouble(argString[1]);
@@ -250,7 +198,6 @@ public class CommandChange implements ICommand {
                                             } else {
 
                                                 if (cooldown.get(ep) + 10000 > System.currentTimeMillis()) {
-
                                                     double distance = distanceSquareToCenterCO(x.get(ep), y.get(ep), z.get(ep), e.posX, e.posY, e.posZ);
 
                                                     if ((radius.get(ep) * radius.get(ep)) < 0 || distance <= (radius.get(ep) * radius.get(ep))) {
@@ -284,24 +231,17 @@ public class CommandChange implements ICommand {
                                             return;
                                         }
 
-
                                     }
                                 } catch (Exception exc) {
-
                                     NoItemDespawn.log(Level.ERROR, org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(exc));
                                     break;
                                 }
 
-
                             } else {
                                 sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.RED + " Cannot be executed as console!"));
                             }
-
-
                         }
-
                     }
-
                 }
                 cooldown.remove((EntityPlayer) sender);
                 type.remove((EntityPlayer) sender);
@@ -313,14 +253,12 @@ public class CommandChange implements ICommand {
                 sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.AQUA + " " + EnumChatFormatting.GOLD + deleted + EnumChatFormatting.AQUA + " dropped items have been destroyed"));
                 if (deleted > 0) {
                     for (Object s : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
-
                         EntityPlayerMP player = (EntityPlayerMP) s;
 
                         if (!player.equals(sender) && ((EntityPlayerMP) player).mcServer.getConfigurationManager().func_152596_g(((EntityPlayerMP) player).getGameProfile())) {
                             player.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "] " + EnumChatFormatting.GREEN + sender.getCommandSenderName() + EnumChatFormatting.AQUA + " removed " + EnumChatFormatting.GOLD + deleted + EnumChatFormatting.AQUA + " dropped items"));
                         }
                     }
-
                 }
                 return;
 
@@ -334,20 +272,16 @@ public class CommandChange implements ICommand {
                             if (argString.length == 2) {
 
                                 try {
-
                                     Double.parseDouble(argString[1]);
 
                                 } catch (Exception exc) {
-
                                     sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.RED + " Please enter a valid value!"));
                                     break;
                                 }
 
                                 if (sender instanceof EntityPlayer) {
 
-
                                     try {
-
                                         EntityPlayer ep = (EntityPlayer) sender;
                                         if (ep.dimension == e.dimension) {
                                             final double radiusF = Double.parseDouble(argString[1]);
@@ -389,15 +323,11 @@ public class CommandChange implements ICommand {
                                                 sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.YELLOW + " sending it again (10 seconds remaining)"));
                                                 return;
                                             }
-
-
                                         }
                                     } catch (Exception exc) {
-
                                         NoItemDespawn.log(Level.ERROR, org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(exc));
                                         break;
                                     }
-
 
                                 } else {
                                     number++;
@@ -406,11 +336,8 @@ public class CommandChange implements ICommand {
                             } else {
                                 number++;
                             }
-
                         }
-
                     }
-
                 }
                 if (sender instanceof EntityPlayer) {
                     cooldown.remove((EntityPlayer) sender);
@@ -431,35 +358,18 @@ public class CommandChange implements ICommand {
         } else {
             sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.RED + " Invalid arguments!"));
         }
-
-        if (argString.length == 2) {
-
-
-        } else {
-
-        }
     }
 
-    @Override
-    public boolean canCommandSenderUseCommand(ICommandSender var1) {
+    @Override public boolean canCommandSenderUseCommand(ICommandSender var1) {
         return true;
-
     }
 
-    @Override
-    public List addTabCompletionOptions(ICommandSender var1, String[] var2) {
-
-        return var2.length == 1
-                ? CommandBase.getListOfStringsMatchingLastWord(var2, new String[]{"dstime", "dsconfig", "updateTime", "count", "despawn"})
-                : null;
-
+    @Override public List addTabCompletionOptions(ICommandSender var1, String[] var2) {
+        return var2.length == 1 ? CommandBase.getListOfStringsMatchingLastWord(var2, new String[]{"dstime", "dsconfig", "updateTime", "count", "despawn"}) : null;
     }
 
-    @Override
-    public boolean isUsernameIndex(String[] var1, int var2) {
-
+    @Override public boolean isUsernameIndex(String[] var1, int var2) {
         return false;
-
     }
 
     public static double distanceSquareToCenterCO(final double x, final double y, final double z, final double x1, final double y1, final double z1) {
@@ -468,6 +378,5 @@ public class CommandChange implements ICommand {
         double dz = z + 0.5D - z1;
         return dx * dx + dy * dy + dz * dz;
     }
-
 
 }
