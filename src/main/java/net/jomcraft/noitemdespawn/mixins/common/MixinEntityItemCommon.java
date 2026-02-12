@@ -24,8 +24,7 @@ public abstract class MixinEntityItemCommon extends Entity {
 
     @Inject(method = "onUpdate", at = @At(value = "HEAD"), cancellable = true, remap = true)
     public void NID_onUpdate(CallbackInfo ci) {
-        if (!this.worldObj.isRemote && (this.age + 1) >= this.lifespan)
-        {
+        if (!this.worldObj.isRemote && (this.age + 1) >= this.lifespan) {
             if (this.getDataWatcher().getWatchableObjectItemStack(10) != null && this.lifespan == Short.MAX_VALUE) {
                 this.age = 0;
             }

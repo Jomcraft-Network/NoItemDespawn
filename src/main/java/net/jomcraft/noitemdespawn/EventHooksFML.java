@@ -25,17 +25,11 @@ public class EventHooksFML {
     @SubscribeEvent
     public void onConfigChanges(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.modID.equals(NoItemDespawn.MODID)) {
-
             ConfigFile config = NoItemDespawn.getConfig();
             config.getInstance().save();
-
-            if (!NoItemDespawn.requiresRestart) {
-
-                config.syncConfiguration();
-                NoItemDespawn.despawnTime = config.cooldown;
-                NoItemDespawn.blacklist = Arrays.asList(config.blacklist);
-
-            }
+            config.syncConfiguration();
+            NoItemDespawn.despawnTime = config.cooldown;
+            NoItemDespawn.blacklist = Arrays.asList(config.blacklist);
         }
     }
 

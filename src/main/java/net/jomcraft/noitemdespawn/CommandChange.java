@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.Level;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
@@ -62,8 +63,9 @@ public class CommandChange implements ICommand {
             sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.GOLD + " updateTime" + EnumChatFormatting.DARK_GREEN + "," + EnumChatFormatting.GOLD + " despawn " + EnumChatFormatting.DARK_GREEN + "or" + EnumChatFormatting.GOLD + " count"));
             return;
         }
+
         if (argString.length == 1 || argString.length == 2) {
-            if (argString[0].equals("updateTime")) {
+            if (argString[0].equals("updateDropped")) {
                 int edited = 0;
                 for (WorldServer wS : MinecraftServer.getServer().worldServers) {
                     synchronized (wS) {
@@ -72,20 +74,18 @@ public class CommandChange implements ICommand {
                             Entity e = (Entity) iterator.next();
                             if (e != null && e instanceof EntityItem) {
                                 EntityItem eI = (EntityItem) e;
-                                if (NoItemDespawn.despawnTime > -1) {
+
+                                if (!NoItemDespawn.blacklist.contains(eI.getEntityItem().getItem().getUnlocalizedName())) {
 
                                     if (argString.length == 2) {
-
                                         try {
                                             Double.parseDouble(argString[1]);
-
                                         } catch (Exception exc) {
                                             sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.RED + " Please enter a valid value!"));
                                             break;
                                         }
 
                                         if (sender instanceof EntityPlayer) {
-
                                             try {
                                                 EntityPlayer ep = (EntityPlayer) sender;
                                                 if (ep.dimension == eI.dimension) {
@@ -93,33 +93,27 @@ public class CommandChange implements ICommand {
                                                     double distance = distanceSquareToCenterCO(ep.posX, ep.posY, ep.posZ, e.posX, e.posY, e.posZ);
                                                     if ((radius * radius) < 0 || distance <= (radius * radius)) {
                                                         eI.age = 0;
-                                                        eI.lifespan = NoItemDespawn.despawnTime;
+                                                        eI.lifespan = NoItemDespawn.despawnTime == -1 ? Short.MAX_VALUE : NoItemDespawn.despawnTime;
                                                         edited++;
                                                     }
                                                 }
 
                                             } catch (Exception exc) {
-
-                                                NoItemDespawn.log(Level.ERROR, org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(exc));
+                                                NoItemDespawn.log.log(Level.ERROR, ExceptionUtils.getStackTrace(exc));
                                                 break;
                                             }
 
                                         } else {
                                             eI.age = 0;
-                                            eI.lifespan = NoItemDespawn.despawnTime;
+                                            eI.lifespan = NoItemDespawn.despawnTime == -1 ? Short.MAX_VALUE : NoItemDespawn.despawnTime;
                                             edited++;
                                         }
 
                                     } else {
                                         eI.age = 0;
-                                        eI.lifespan = NoItemDespawn.despawnTime;
+                                        eI.lifespan = NoItemDespawn.despawnTime == -1 ? Short.MAX_VALUE : NoItemDespawn.despawnTime;
                                         edited++;
                                     }
-
-                                } else {
-                                    sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.RED + " You cannot use this command:"));
-                                    sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.GOLD + " The despawn-cooldown is infinite!"));
-                                    return;
                                 }
                             }
                         }
@@ -127,47 +121,6 @@ public class CommandChange implements ICommand {
                 }
 
                 sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "] " + EnumChatFormatting.GOLD + edited + EnumChatFormatting.AQUA + " items have been modified!"));
-                return;
-            } else if (argString[0].equals("dstime") && argString.length == 2) {
-                try {
-                    Integer value = Integer.parseInt(argString[1]);
-                    Integer dTime = NoItemDespawn.instance().despawnTime;
-
-                    if ((dTime == Integer.MAX_VALUE && value > 0) || (dTime > 0 && value < 0)) {
-                        sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.RED + " Enabling/Disabling item-despawn is not"));
-                        sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.RED + " possible while game is running!"));
-                        sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.GREEN + " Please use /nid dsconfig <time> to change"));
-                        return;
-                    }
-
-                    sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.AQUA + " Changed despawn-time from " + EnumChatFormatting.GOLD + dTime + EnumChatFormatting.AQUA + " to: " + EnumChatFormatting.GOLD + value + EnumChatFormatting.AQUA + "!"));
-
-                    NoItemDespawn.instance().despawnTime = value;
-                    NoItemDespawn.getConfig().getInstance().get("Main", "Despawn-cooldown", 6000, "The custom despawn-cooldown of dropped items.").set(value);
-                    NoItemDespawn.getConfig().getInstance().save();
-                    NoItemDespawn.getConfig().syncConfiguration();
-
-                } catch (Exception e) {
-                    sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.RED + " Something definitly went wrong. Logged!"));
-                    NoItemDespawn.log(Level.ERROR, org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(e));
-                }
-                return;
-            } else if (argString[0].equals("dsconfig") && argString.length == 2) {
-
-                try {
-                    Integer value = Integer.parseInt(argString[1]);
-                    Integer dTime = NoItemDespawn.getConfig().cooldown;
-
-                    sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.AQUA + " Changed despawn-time in config from " + EnumChatFormatting.GOLD + (dTime < 0 ? "infinite" : dTime) + EnumChatFormatting.AQUA + " to: " + EnumChatFormatting.GOLD + (value < 0 ? "infinite" : value) + EnumChatFormatting.AQUA + "!"));
-                    sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.RED + " This will only apply after a restart!"));
-
-                    NoItemDespawn.getConfig().getInstance().get("Main", "Despawn-cooldown", 6000, "The custom despawn-cooldown of dropped items.").set(value);
-                    NoItemDespawn.getConfig().getInstance().save();
-
-                } catch (Exception e) {
-                    sender.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.GREEN + EnumChatFormatting.BOLD + "NID" + EnumChatFormatting.DARK_GRAY + "]" + EnumChatFormatting.RED + " Something definitly went wrong. Logged!"));
-                    NoItemDespawn.log(Level.ERROR, org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(e));
-                }
                 return;
             } else if (argString[0].equals("despawn") && argString.length == 2) {
                 int deleted = 0;
@@ -233,7 +186,7 @@ public class CommandChange implements ICommand {
 
                                     }
                                 } catch (Exception exc) {
-                                    NoItemDespawn.log(Level.ERROR, org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(exc));
+                                    NoItemDespawn.log.log(Level.ERROR, org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(exc));
                                     break;
                                 }
 
@@ -325,7 +278,7 @@ public class CommandChange implements ICommand {
                                             }
                                         }
                                     } catch (Exception exc) {
-                                        NoItemDespawn.log(Level.ERROR, org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(exc));
+                                        NoItemDespawn.log.log(Level.ERROR, org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(exc));
                                         break;
                                     }
 
@@ -365,7 +318,7 @@ public class CommandChange implements ICommand {
     }
 
     @Override public List addTabCompletionOptions(ICommandSender var1, String[] var2) {
-        return var2.length == 1 ? CommandBase.getListOfStringsMatchingLastWord(var2, new String[]{"dstime", "dsconfig", "updateTime", "count", "despawn"}) : null;
+        return var2.length == 1 ? CommandBase.getListOfStringsMatchingLastWord(var2, new String[]{"updateDropped", "count", "despawn"}) : null;
     }
 
     @Override public boolean isUsernameIndex(String[] var1, int var2) {

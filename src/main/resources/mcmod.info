@@ -3,7 +3,7 @@
   "modid": "noitemdespawn",
   "name": "NoItemDespawn",
   "description": "This mod gives the user the ability of modifying item-despawn on server- or clientside.",
-  "version": "NID-VERSION",
+  "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
